@@ -1,3 +1,9 @@
 this is a windows payload file
 blah
 wowzer
+REPEAT 3
+hello1
+hello2
+hello3
+END
+finished yo
