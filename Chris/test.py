@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 def reader(lines):
 	skiploc=-1
-	for idx, line in enumerate(lines):
-		lines[idx]=lines[idx].rstrip('\r\n')
 	for idx, line in enumerate(lines): # 0 Based Indexing
 		if skiploc == -1:
 			stripped = line.lstrip("\t")
@@ -25,7 +23,7 @@ def repeat(reps, lines):
 	for i in range(int(reps)):
 		reader(lines)
 
-payload = open("cmd.txt", 'r')
-lines = payload.readlines()
+with open("cmd.txt", "r") as fd:
+	lines = fd.read().splitlines()
 reader(lines)
-payload.close()
+fd.close()
