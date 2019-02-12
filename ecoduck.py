@@ -21,12 +21,12 @@ class eco:
 		for idx, line in enumerate(lines):
 			#debug
 			stripped = line.rstrip("\r\n")
-			#print(str(idx) + ": " + stripped)
 			#print("Length: " + str(len(stripped)))
 			#print(skiploc)
 			#print("BEFORE FINDER")
 			if skiploc == -1:
-				print("In finder")
+				print(str(idx) + ": " + stripped)
+				#print("In finder")
 				if eco.commandFinder(stripped) == "TYPE":
 					currentLine = stripped.lstrip("TYPE ")
 					eco.type(currentLine)
@@ -42,16 +42,29 @@ class eco:
 					eco.press()
 				elif eco.commandFinder(stripped) == "REPEAT":
 					reps = stripped.lstrip("REPEAT ")
-					end=lines.index("END",idx)
+					counts=1
+					end=-1
+					for edx, line in enumerate(lines[idx+1:]):
+						if (line[:6]== "REPEAT"):
+							counts +=1
+						if (line == "END"):
+							counts -=1
+							end=edx
+						if (counts == 0):
+							break
+					if (counts != 0):
+						raise ValueError('User Error - Unclosed Repeat')
+					end=idx+1+end
+					# print("Start: " + str(idx+1))
+					# print("End: " + str(end-1))
 					eco.repeat(reps, lines[idx+1:end])
-					print("Skipping started")
-					skiploc=end
-					print("Skip value: "+str(skiploc))
+					skiploc=end 
+					print("Skipping to: " + str(skiploc))
 			else:
-				print("Skipping Line")
+				print("Skipping Value: " + line)
 				if idx == skiploc:
 					print("Skipping stopped")
-					skiploc=-1				
+					skiploc=-1	
 					#eco.interpreter()
 			eco.payload.close()
 	#def interpreter():
