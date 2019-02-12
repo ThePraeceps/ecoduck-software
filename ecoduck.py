@@ -386,4 +386,5 @@ class eco:
 		os.write(fd, report)
 		os.close(fd)
 #eco.start()
+#connorwashere
 eco.reader(eco.payload.read().splitlines())	
