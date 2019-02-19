@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
+
 import os,signal,io,array
 from subprocess import Popen, PIPE, check_output
+
 
 class eco:
 	#if os == win:
@@ -11,11 +13,6 @@ class eco:
 	#	payload = open("mac.txt", 'r')
 	#else:
 	#	print("Unable to detect OS!")
-	##def start(fromRepeat=None):
-	##	if fromRepeat!=None:
-	##		eco.reader(payload.fromRepeat)
-	##	else:
-	##		eco.reader(eco.payload.readlines())
 	def reader(lines):
 		skiploc=-1
 		for idx, line in enumerate(lines):
@@ -25,7 +22,7 @@ class eco:
 			#print(skiploc)
 			#print("BEFORE FINDER")
 			if skiploc == -1:
-				print(str(idx) + ": " + stripped)
+				#print(str(idx) + ": " + stripped)
 				#print("In finder")
 				if eco.commandFinder(stripped) == "TYPE":
 					currentLine = stripped.lstrip("TYPE ")
@@ -39,9 +36,9 @@ class eco:
 					eco.delay(timeToWait)
 				elif eco.commandFinder(stripped) == "PRESS":
 					currentLine = currentLine = stripped.lstrip("PRESS ")
-					eco.press()
+					eco.press(currentLine)
 				elif eco.commandFinder(stripped) == "REPEAT":
-					reps = stripped.lstrip("REPEAT ")
+					reps = int(stripped.lstrip("REPEAT "))
 					counts=1
 					end=-1
 					for edx, line in enumerate(lines[idx+1:]):
@@ -59,78 +56,77 @@ class eco:
 					# print("End: " + str(end-1))
 					eco.repeat(reps, lines[idx+1:end])
 					skiploc=end 
-					print("Skipping to: " + str(skiploc))
+					#print("Skipping to: " + str(skiploc))
 			else:
 				print("Skipping Value: " + line)
 				if idx == skiploc:
 					print("Skipping stopped")
-					skiploc=-1	
-					#eco.interpreter()
+					skiploc=-1
 			eco.payload.close()
-	#def interpreter():
+
+	#Repeat function
 	def repeat(reps, lines):
 		for i in range(int(reps)):
 			eco.reader(lines)
-	#press function
-	def press (commandString):
-		#commandString = "RGUI+LCTRL+delete+s"
-		commands = commandString.lower()	
-		OverLord = commands.split("+")
-		ModifierList = []
-		StringList = []
-		for i in OverLord:
-			print("The current word for i is: " + i)
 
-			if i == "rgui":
-			#set modifier to true
-				RGUI = True
-				ModifierList.append("RGUI")
-			elif i == "ralt":
-			#set modifier to true
-				RALT = True
-				ModifierList.append("RALT")
-			elif i == "rshift":
-			#set modifier to true
-				RSHIFT = True
-				ModifierList.append("RHIFT")
-			elif i == "rctrl":
-			#set modifier to true
-				RCTRL = True
-				ModifierList.append("RCTRL")
-			elif i == "lgui":
-			#set modifier to true
-				LGUI = True
-				ModifierList.append("LGUI")
-			elif i == "lalt":
-			#set modifier to true
-				LALT = True
-				ModifierList.append("LALT")
-			elif i == "lshift":
-			#set modifier to true
-				LSHIFT = True
-				ModifierList.append("LSHIFT")
-			elif i == "lctrl":
-			#set modifier to true
-				LCTRL = True
-				ModifierList.append("LCTRL")
-			else:
-				StringList.append(i)
+	#Press function
+	def press (commandString):
+		
+		if commandString.find("++") != -1:
+			print ("error")
+		else:	
+			commands = commandString.lower()
+	
+			CodeSplitter = commands.split("+")		
+			ModifierList = []
+			StringList = []
+			for i in CodeSplitter:
+				print("The current word for i is: " + i)
+
+				if i == "rgui":
+				#set modifier to true
+					ModifierList.append("RGUI")
+				elif i == "ralt":
+				#set modifier to true
+					ModifierList.append("RALT")
+				elif i == "rshift":
+				#set modifier to true
+					ModifierList.append("RSHIFT")
+				elif i == "rctrl":
+				#set modifier to true
+					ModifierList.append("RCTRL")
+				elif i == "lgui":
+				#set modifier to true
+					ModifierList.append("LGUI")
+				elif i == "lalt":
+				#set modifier to true
+					ModifierList.append("LALT")
+				elif i == "lshift":
+				#set modifier to true
+					ModifierList.append("LSHIFT")
+				elif i == "lctrl":
+				#set modifier to true
+					ModifierList.append("LCTRL")
+				else:
+					StringList.append(i)
+			sendHIDpack(createHIDpack(StringList,ModifierList))
+
 	def DELAY(seconds):
 		from time import sleep
 		sleep(seconds)
+	
 	def TYPE(inputs):	
 		emptyList = []
 		for char in inputs:
 			anotherEmptyList = []
 			anotherEmptyList.append(char)
-			createHex(char, emptyList)  
+			sendHIDpack(createHIDpack(char, emptyList))
+
 	def commandFinder(line):	
 		command = line.split(" ")[0]
-		#print(len(command))
-		#print(command)
 		return command
-	#Lookup table here
 	
+	#Lookup table	
 	LookUpTable = {
 
 		"a":"\x04",
@@ -234,6 +230,7 @@ class eco:
 	}
 
 	LookUpTable2 = {
+
 		"A":"a",
 		"B":"b",
 		"C":"c",
@@ -262,6 +259,7 @@ class eco:
 		"Z":"z",
 
 		"_":"-",
+		"plus":"=",
 		"+":"=",
 		"{":"[",
 		"}":"]",
@@ -297,8 +295,9 @@ class eco:
 		"*":"8",
 		"(":"9",
 		")":"0"}
+
 	#Pass a vector into the function for scancodes
-	def createHex(ScanCodes = [], modifiers = []):
+	def createHIDpack(ScanCodes = [], modifiers = []):
 		RGUI = False
 		RALT = False
 		RSHIFT = False
@@ -352,23 +351,21 @@ class eco:
 		NullByte = "\x00"
 	
 		#Start to build the hid packet
-		hidPack = FirstByte + NullByte.encode()
+		HIDpack = FirstByte + NullByte.encode()
 	
 		#Add the remaining hex values to the hid packet
 		for i in HexValues:
-			hidPack = hidPack + HexValues[i].encode()
+			HIDpack = HIDpack + HexValues[i].encode()
 			
 		length = len(HexValues) + 2
 	
 		#Add the remainder of bytes as null bytes
 		while length != 8:
-			hidPack = hidPack + NullByte.encode()
+			HIDpack = HIDpack + NullByte.encode()
 			length = length + 1
 
-		print(":".join("{:02x}".format(ord(c)) for c in hidPack.decode()))
-
-		#path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
-		#write_report(hidPack, path)
+		print(":".join("{:02x}".format(ord(c)) for c in HIDpack.decode()))
+		return HIDpack;
 
 	#function to create the first byte of the packet
 	def bitwise(modifier, binarystring):
@@ -380,11 +377,11 @@ class eco:
 	
 
 	#Function to send code to The overlord
-	def write_report(report, path):
+	def sendHIDPacket(HIDpack):
+		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 		# Writes packet to given path
 		fd = os.open(path, os.O_RDWR)
 		os.write(fd, report)
 		os.close(fd)
-#eco.start()
-#connorwashere
+
 eco.reader(eco.payload.read().splitlines())	
