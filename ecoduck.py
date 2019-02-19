@@ -25,8 +25,13 @@ class eco:
 				#print(str(idx) + ": " + stripped)
 				#print("In finder")
 				if eco.commandFinder(stripped) == "TYPE":
+<<<<<<< HEAD
 					currentLine = stripped[5:]
 					eco.type(currentLine)
+=======
+					currentLine = stripped.lstrip("TYPE ")
+					eco.typeText(currentLine)
+>>>>>>> 3abc55574cd2328c5e0680850aef0900d8472b37
 				elif eco.commandFinder(stripped) == "CMT": 
 					#do nothing
 					x=1
@@ -109,7 +114,8 @@ class eco:
 					ModifierList.append("LCTRL")
 				else:
 					StringList.append(i)
-			sendHIDpack(createHIDpack(StringList,ModifierList))
+			eco.sendHIDpack(eco.createHIDpack(StringList,ModifierList))
+			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	def delay(seconds):
 		from time import sleep
@@ -120,7 +126,8 @@ class eco:
 		for char in inputs:
 			anotherEmptyList = []
 			anotherEmptyList.append(char)
-			sendHIDpack(createHIDpack(char, emptyList))
+			eco.sendHIDpack(eco.createHIDpack(char, emptyList))
+			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	def commandFinder(line):	
 		command = line.split(" ")[0]
@@ -313,11 +320,11 @@ class eco:
 		#Formulate a lookup table for the scan codes 
 		for i in ScanCodes:
 			x = x + 1
-			if str(i) in LookUpTable:
-				HexValues["Value{0}".format(x)] = LookUpTable[i] 
-			elif str(i) in LookUpTable2:
+			if str(i) in eco.LookUpTable:
+				HexValues["Value{0}".format(x)] = eco.LookUpTable[i] 
+			elif str(i) in eco.LookUpTable2:
 				LSHIFT = True
-				HexValues["Value{0}".format(x)] = LookUpTable[LookUpTable2[i]]
+				HexValues["Value{0}".format(x)] = eco.LookUpTable[eco.LookUpTable2[i]]
 		for i in modifiers:
 			if i == "RGUI":
 				RGUI = True
@@ -330,14 +337,14 @@ class eco:
 			if i == "LGUI":
 				LGUI = True
 			if i == "LALT":
-				LALT = True
+				LALT = TrueP
 			if i == "LSHIFT":
 				LSHIFT = True
 			if i == "LCTRL":
 				LCTRL = True
 
 		#Create the first byte in binary
-		FirstByte = bitwise(RGUI,binarystring) + bitwise(RALT,binarystring) + bitwise(RSHIFT, binarystring) + bitwise(RCTRL, binarystring) + bitwise(LGUI, binarystring) + bitwise(LALT, binarystring) + bitwise(LSHIFT, binarystring) + bitwise(LCTRL, binarystring) 
+		FirstByte = eco.bitwise(RGUI,binarystring) + eco.bitwise(RALT,binarystring) + eco.bitwise(RSHIFT, binarystring) + eco.bitwise(RCTRL, binarystring) + eco.bitwise(LGUI, binarystring) + eco.bitwise(LALT, binarystring) + eco.bitwise(LSHIFT, binarystring) + eco.bitwise(LCTRL, binarystring) 
 	
 		print(FirstByte)
 
@@ -381,7 +388,7 @@ class eco:
 		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 		# Writes packet to given path
 		fd = os.open(path, os.O_RDWR)
-		os.write(fd, report)
+		os.write(fd, HIDpack)
 		os.close(fd)
 
 eco.reader(eco.payload.read().splitlines())	
