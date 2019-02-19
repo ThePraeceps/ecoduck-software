@@ -44,7 +44,7 @@ def delay(seconds):
 	from time import sleep
 	sleep(seconds)
 
-def type(inputs):	
+def typeText(inputs):	
 	emptyList = []
 	for char in inputs:
 		anotherEmptyList = []
