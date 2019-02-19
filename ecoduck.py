@@ -26,7 +26,7 @@ class eco:
 				#print("In finder")
 				if eco.commandFinder(stripped) == "TYPE":
 					currentLine = stripped[5:]
-					eco.type(currentLine)
+					eco.typeText(currentLine)
 				elif eco.commandFinder(stripped) == "CMT": 
 					#do nothing
 					x=1
@@ -186,6 +186,7 @@ class eco:
 		"backspace":"\x2a",
 		"tab":"\x2b",
 		"space":"\x2c",
+		" ":"\x2c",
 		"-":"\x2d",
 		"=":"\x2e",
 		"[":"\x2f",
