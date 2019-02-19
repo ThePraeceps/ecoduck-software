@@ -313,11 +313,11 @@ class eco:
 		#Formulate a lookup table for the scan codes 
 		for i in ScanCodes:
 			x = x + 1
-			if str(i) in LookUpTable:
-				HexValues["Value{0}".format(x)] = LookUpTable[i] 
-			elif str(i) in LookUpTable2:
+			if str(i) in eco.LookUpTable:
+				HexValues["Value{0}".format(x)] = eco.LookUpTable[i] 
+			elif str(i) in eco.LookUpTable2:
 				LSHIFT = True
-				HexValues["Value{0}".format(x)] = LookUpTable[LookUpTable2[i]]
+				HexValues["Value{0}".format(x)] = eco.LookUpTable[eco.LookUpTable2[i]]
 		for i in modifiers:
 			if i == "RGUI":
 				RGUI = True
