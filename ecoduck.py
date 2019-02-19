@@ -111,11 +111,11 @@ class eco:
 					StringList.append(i)
 			sendHIDpack(createHIDpack(StringList,ModifierList))
 
-	def DELAY(seconds):
+	def delay(seconds):
 		from time import sleep
 		sleep(seconds)
 	
-	def TYPE(inputs):	
+	def typeText(inputs):	
 		emptyList = []
 		for char in inputs:
 			anotherEmptyList = []
@@ -377,7 +377,7 @@ class eco:
 	
 
 	#Function to send code to The overlord
-	def sendHIDPacket(HIDpack):
+	def sendHIDpack(HIDpack):
 		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 		# Writes packet to given path
 		fd = os.open(path, os.O_RDWR)
