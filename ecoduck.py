@@ -381,7 +381,7 @@ class eco:
 		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 		# Writes packet to given path
 		fd = os.open(path, os.O_RDWR)
-		os.write(fd, report)
+		os.write(fd, HIDpack)
 		os.close(fd)
 
 eco.reader(eco.payload.read().splitlines())	
