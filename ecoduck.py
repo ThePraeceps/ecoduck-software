@@ -25,13 +25,8 @@ class eco:
 				#print(str(idx) + ": " + stripped)
 				#print("In finder")
 				if eco.commandFinder(stripped) == "TYPE":
-<<<<<<< HEAD
 					currentLine = stripped[5:]
 					eco.type(currentLine)
-=======
-					currentLine = stripped.lstrip("TYPE ")
-					eco.typeText(currentLine)
->>>>>>> 3abc55574cd2328c5e0680850aef0900d8472b37
 				elif eco.commandFinder(stripped) == "CMT": 
 					#do nothing
 					x=1
