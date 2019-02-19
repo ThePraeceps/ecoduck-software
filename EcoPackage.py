@@ -40,11 +40,11 @@ def press (commandString):
 				StringList.append(i)
 		sendHIDpack(createHIDpack(StringList,ModifierList))
 
-def DELAY(seconds):
+def delay(seconds):
 	from time import sleep
 	sleep(seconds)
 
-def TYPE(inputs):	
+def type(inputs):	
 	emptyList = []
 	for char in inputs:
 		anotherEmptyList = []
