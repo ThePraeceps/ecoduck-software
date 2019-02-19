@@ -110,6 +110,7 @@ class eco:
 				else:
 					StringList.append(i)
 			eco.sendHIDpack(eco.createHIDpack(StringList,ModifierList))
+			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	def delay(seconds):
 		from time import sleep
@@ -121,6 +122,7 @@ class eco:
 			anotherEmptyList = []
 			anotherEmptyList.append(char)
 			eco.sendHIDpack(eco.createHIDpack(char, emptyList))
+			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	def commandFinder(line):	
 		command = line.split(" ")[0]
