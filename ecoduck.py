@@ -26,7 +26,7 @@ class eco:
 				#print("In finder")
 				if eco.commandFinder(stripped) == "TYPE":
 					currentLine = stripped.lstrip("TYPE ")
-					eco.type(currentLine)
+					eco.typeText(currentLine)
 				elif eco.commandFinder(stripped) == "CMT": 
 					#do nothing
 					x=1
@@ -330,14 +330,14 @@ class eco:
 			if i == "LGUI":
 				LGUI = True
 			if i == "LALT":
-				LALT = True
+				LALT = TrueP
 			if i == "LSHIFT":
 				LSHIFT = True
 			if i == "LCTRL":
 				LCTRL = True
 
 		#Create the first byte in binary
-		FirstByte = bitwise(RGUI,binarystring) + bitwise(RALT,binarystring) + bitwise(RSHIFT, binarystring) + bitwise(RCTRL, binarystring) + bitwise(LGUI, binarystring) + bitwise(LALT, binarystring) + bitwise(LSHIFT, binarystring) + bitwise(LCTRL, binarystring) 
+		FirstByte = eco.bitwise(RGUI,binarystring) + eco.bitwise(RALT,binarystring) + eco.bitwise(RSHIFT, binarystring) + eco.bitwise(RCTRL, binarystring) + eco.bitwise(LGUI, binarystring) + eco.bitwise(LALT, binarystring) + eco.bitwise(LSHIFT, binarystring) + eco.bitwise(LCTRL, binarystring) 
 	
 		print(FirstByte)
 
