@@ -25,20 +25,20 @@ class eco:
 				#print(str(idx) + ": " + stripped)
 				#print("In finder")
 				if eco.commandFinder(stripped) == "TYPE":
-					currentLine = stripped.lstrip("TYPE ")
+					currentLine = stripped[5:]
 					eco.type(currentLine)
 				elif eco.commandFinder(stripped) == "CMT": 
 					#do nothing
 					x=1
 				elif eco.commandFinder(stripped) == "DELAY":
-					currentLine = stripped.lstrip("DELAY ")
+					currentLine = stripped[6:]
 					timeToWait = int(currentLine)
 					eco.delay(timeToWait)
 				elif eco.commandFinder(stripped) == "PRESS":
-					currentLine = currentLine = stripped.lstrip("PRESS ")
+					currentLine = currentLine = stripped[6:]
 					eco.press(currentLine)
 				elif eco.commandFinder(stripped) == "REPEAT":
-					reps = int(stripped.lstrip("REPEAT "))
+					reps = int(stripped[7:])
 					counts=1
 					end=-1
 					for edx, line in enumerate(lines[idx+1:]):
