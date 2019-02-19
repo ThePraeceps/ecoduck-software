@@ -109,7 +109,7 @@ class eco:
 					ModifierList.append("LCTRL")
 				else:
 					StringList.append(i)
-			eco.sendHIDpack(createHIDpack(StringList,ModifierList))
+			eco.sendHIDpack(eco.createHIDpack(StringList,ModifierList))
 
 	def delay(seconds):
 		from time import sleep
@@ -120,7 +120,7 @@ class eco:
 		for char in inputs:
 			anotherEmptyList = []
 			anotherEmptyList.append(char)
-			eco.sendHIDpack(createHIDpack(char, emptyList))
+			eco.sendHIDpack(eco.createHIDpack(char, emptyList))
 
 	def commandFinder(line):	
 		command = line.split(" ")[0]
