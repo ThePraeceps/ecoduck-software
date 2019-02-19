@@ -79,7 +79,7 @@ class eco:
 	
 			CodeSplitter = commands.split("+")		
 			ModifierList = []
-			StringList = []
+			KeypressList = []
 			for i in CodeSplitter:
 				print("The current word for i is: " + i)
 
@@ -108,8 +108,8 @@ class eco:
 				#set modifier to true
 					ModifierList.append("LCTRL")
 				else:
-					StringList.append(i)
-			eco.sendHIDpack(eco.createHIDpack(StringList,ModifierList))
+					KeypressList.append(i)
+			eco.sendHIDpack(eco.createHIDpack(KeypressList,ModifierList))
 			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	def delay(seconds):
@@ -119,8 +119,6 @@ class eco:
 	def typeText(inputs):	
 		emptyList = []
 		for char in inputs:
-			anotherEmptyList = []
-			anotherEmptyList.append(char)
 			eco.sendHIDpack(eco.createHIDpack(char, emptyList))
 			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
