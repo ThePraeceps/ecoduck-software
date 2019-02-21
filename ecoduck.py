@@ -26,7 +26,7 @@ class eco:
 				#print("In finder")
 				if eco.commandFinder(stripped) == "TYPE":
 					currentLine = stripped[5:]
-					eco.typeText(currentLine)
+					eco.type(currentLine)
 				elif eco.commandFinder(stripped) == "CMT": 
 					#do nothing
 					x=1
@@ -116,7 +116,7 @@ class eco:
 		from time import sleep
 		sleep(seconds)
 	
-	def typeText(inputs):	
+	def type(inputs):	
 		emptyList = []
 		for char in inputs:
 			eco.sendHIDpack(eco.createHIDpack(char, emptyList))

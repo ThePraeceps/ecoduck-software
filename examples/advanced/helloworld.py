@@ -1,4 +1,4 @@
-import ecoduck.py
+from ecoduck import eco
 from time import sleep
 
 eco.press("LGUI+R")
