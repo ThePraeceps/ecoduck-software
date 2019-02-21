@@ -363,7 +363,7 @@ class eco:
 		ModifierByte = ""
 		for modifier, state in ModifierList:
 			if(eco.debug):
-				print(modifier + ":"+state)
+				print(modifier + ":"+str(state))
 			if(state):
 				ModifierByte += "1"
 			else:
