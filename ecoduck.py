@@ -360,20 +360,20 @@ class eco:
 				LSHIFT = True
 				ScanCodes["Value{0}".format(x)] = eco.LookUpScanCode[eco.LookUpShiftLayer[key]]
 
-		ModifierByte = ""
+		ModifierStr = ""
 		for modifier, state in ModifierList:
 			if(eco.debug):
 				print(modifier + ":"+str(state))
 			if(state):
-				ModifierByte += "1"
+				ModifierStr += "1"
 			else:
-				ModifierByte += "0"
+				ModifierStr += "0"
 			
 		if(eco.debug):
-			print(ModifierByte)
+			print(ModifierStr)
 
 		# Converts the first byte into int
-		ModifierByte = int(ModifierByte,2)
+		ModifierByte = int(ModifierStr,2)
 	
 		# Encodes the first byte to binary literal
 		ModifierByte = chr(ModifierByte).encode()
