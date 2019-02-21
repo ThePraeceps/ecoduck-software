@@ -405,13 +405,12 @@ class eco:
 		fd = os.open(path, os.O_RDWR)
 		os.write(fd, HIDpacket)
 		os.close(fd)
-
+	# Loops till connection tests fails
 	def wait_for_disconnect():
-	# Loops till electrical tests fails
-	print("Waiting for device removal")
-	while(test_connection("/dev/hidg0",1)):
-		sleep(3)
-	print("Disconnected!")
+		print("Waiting for device removal")
+		while(test_connection("/dev/hidg0",1)):
+			sleep(3)
+		print("Disconnected!")
 
 
 	def timeout_handler():
