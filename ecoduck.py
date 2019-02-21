@@ -363,9 +363,9 @@ class eco:
 		ModiferByte = ""
 		for modifier, state in ModifierList:
 			if(state):
-				ModiferByte += 1
+				ModiferByte += "1"
 			else:
-				ModiferByte += 0
+				ModiferByte += "0"
 			
 		if(eco.debug):
 			print(ModiferByte)
