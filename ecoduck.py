@@ -186,12 +186,12 @@ class eco:
 				# Getting rid of new line characters from input
 				line = file_line.rstrip("\r\n")
 
-				if(debug):
+				if(eco.debug):
 					print("Line: " + str(line_no) + ", Command: " + line + ", Length: " + str(len(line)))
 
 				# Checks for skips caused by repeat function
 				if skipdestination == -1:
-					if(debug):
+					if(eco.debug):
 						print("Command being interporated")
 
 					# Splitting line into command and command argument
@@ -206,7 +206,7 @@ class eco:
 						timeToWait = float(current_arg)
 						# Check for invalid delay length
 						if(isnan(timeToWait)):
-							if(debug):
+							if(eco.debug):
 								print("User passed attempted to use invalid delay length")
 								print("Argument: " + current_arg)
 							raise ValueError('User Error - Invalid Delay Length')
@@ -215,24 +215,24 @@ class eco:
 						repetitions = int(current_arg)
 						# Check for invalid repeat length
 						if(isnan(timeToWait)):
-							if(debug):
+							if(eco.debug):
 								print("User passed attempted to use invalid repeat length ")
 								print("Argument: " + current_arg)
 							raise ValueError('User Error - Invalid Repeat Length')
 						repeat_depth=1
 						repeat_length=-1
 
-						if(debug):
+						if(eco.debug):
 							print("Repeat open on line: " + str(line_no))
 
 						# Looking for outer repeat end
 						for cur_length, line_check in enumerate(eds_lines[line_no+1:]):
 							if "REPEAT" in line_check:
-								if(debug):
+								if(eco.debug):
 									print("Repeat open on line: " + str(cur_length+line_no+1))
 								repeat_depth +=1
 							if "END" in line_check:
-								if(debug):
+								if(eco.debug):
 									print("Repeat close on line: " + str(cur_length+line_no+1))
 								repeat_depth -=1
 								repeat_end=repeat_length
@@ -242,35 +242,35 @@ class eco:
 
 						# Error checking number of repeats
 						if (counts != 0):
-							if(debug):
+							if(eco.debug):
 								print("User did not close repeat correctly")
 								print("Repeat location: " + str(line_no))
 							raise ValueError('User Error - Unclosed Repeat')
 
 						repeat_end=line_no+1+repeat_end
-						if(debug):
+						if(eco.debug):
 							print("Repeat Code Start: " + str(line_no+1))
 							print("Repeat Code End: " + str(repeat_end-1))
 
 						eco.basic.repeat(reps, lines[line_no+1:repeat_end-1])
 						skipdestination=repeat_end
 
-						if(debug): 
+						if(eco.debug): 
 							print("Skipping to: " + str(skipdestination))
 					elif current_command == "CMT": 
-						if(debug):
+						if(eco.debug):
 							print("User Comment: " + current_arg)
 					else:
-						if(debug):
+						if(eco.debug):
 							print("User did not give valid command")
 							print("Command: " + current_command)
 						raise ValueError('User Error - Invalid command')
 				else:
-					if(debug):
+					if(eco.debug):
 						print("Skipping Command: " + str(line_no))
 
 					if line_no == skipdestination:
-						if(debug):
+						if(eco.debug):
 							print("Skipping stopped")
 						skipdestination=-1
 
@@ -314,7 +314,7 @@ class eco:
 			]
 			KeyList = []
 			for command in commandlist:
-				if(debug):
+				if(eco.debug):
 					print("Key found in press function: " + command)
 
 				if command == "lctrl":
@@ -367,7 +367,7 @@ class eco:
 			else:
 				ModiferByte += 0
 			
-		if(debug):
+		if(eco.debug):
 			print(ModiferByte)
 
 		# Converts the first byte into int
