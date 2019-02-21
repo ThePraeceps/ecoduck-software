@@ -341,8 +341,8 @@ class eco:
 	
 	def type(textString):	
 		emptyList = []
-		for char in textString:
-			eco.sendHIDpacket(eco.createHIDpacket(char, emptyList))
+		for key in textString:
+			eco.sendHIDpacket(eco.createHIDpacket(key, emptyList))
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	#Pass a vector into the function for scancodes
