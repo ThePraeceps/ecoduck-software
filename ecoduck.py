@@ -334,7 +334,7 @@ class eco:
 				elif command == "rgui":
 					ModifierList[0] = ["RGUI", True]
 				else:
-					KeyList.append(i)
+					KeyList.append(command)
 
 			eco.sendHIDpacket(eco.createHIDpacket(KeyList,ModifierList))
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
