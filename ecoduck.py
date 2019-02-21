@@ -2,133 +2,12 @@
 
 import os,signal,io,array
 from subprocess import Popen, PIPE, check_output
-
+from math import isnan
 
 class eco:
-	#if os == win:
-	payload = open("win.txt", 'r')
-	#elif os == lin:
-	#	payload = open("lin.txt", 'r')
-	#elif os == mac:
-	#	payload = open("mac.txt", 'r')
-	#else:
-	#	print("Unable to detect OS!")
-	def reader(lines):
-		skiploc=-1
-		for idx, line in enumerate(lines):
-			#debug
-			stripped = line.rstrip("\r\n")
-			#print("Length: " + str(len(stripped)))
-			#print(skiploc)
-			#print("BEFORE FINDER")
-			if skiploc == -1:
-				#print(str(idx) + ": " + stripped)
-				#print("In finder")
-				if eco.commandFinder(stripped) == "TYPE":
-					currentLine = stripped[5:]
-					eco.type(currentLine)
-				elif eco.commandFinder(stripped) == "CMT": 
-					#do nothing
-					x=1
-				elif eco.commandFinder(stripped) == "DELAY":
-					currentLine = stripped[6:]
-					timeToWait = int(currentLine)
-					eco.delay(timeToWait)
-				elif eco.commandFinder(stripped) == "PRESS":
-					currentLine = currentLine = stripped[6:]
-					eco.press(currentLine)
-				elif eco.commandFinder(stripped) == "REPEAT":
-					reps = int(stripped[7:])
-					counts=1
-					end=-1
-					for edx, line in enumerate(lines[idx+1:]):
-						if (line[:6]== "REPEAT"):
-							counts +=1
-						if (line == "END"):
-							counts -=1
-							end=edx
-						if (counts == 0):
-							break
-					if (counts != 0):
-						raise ValueError('User Error - Unclosed Repeat')
-					end=idx+1+end
-					# print("Start: " + str(idx+1))
-					# print("End: " + str(end-1))
-					eco.repeat(reps, lines[idx+1:end])
-					skiploc=end 
-					#print("Skipping to: " + str(skiploc))
-			else:
-				print("Skipping Value: " + line)
-				if idx == skiploc:
-					print("Skipping stopped")
-					skiploc=-1
-			eco.payload.close()
-
-	#Repeat function
-	def repeat(reps, lines):
-		for i in range(int(reps)):
-			eco.reader(lines)
-
-	#Press function
-	def press (commandString):
-		
-		if commandString.find("++") != -1:
-			print ("error")
-		else:	
-			commands = commandString.lower()
-	
-			CodeSplitter = commands.split("+")		
-			ModifierList = []
-			KeypressList = []
-			for i in CodeSplitter:
-				print("The current word for i is: " + i)
-
-				if i == "rgui":
-				#set modifier to true
-					ModifierList.append("RGUI")
-				elif i == "ralt":
-				#set modifier to true
-					ModifierList.append("RALT")
-				elif i == "rshift":
-				#set modifier to true
-					ModifierList.append("RSHIFT")
-				elif i == "rctrl":
-				#set modifier to true
-					ModifierList.append("RCTRL")
-				elif i == "lgui":
-				#set modifier to true
-					ModifierList.append("LGUI")
-				elif i == "lalt":
-				#set modifier to true
-					ModifierList.append("LALT")
-				elif i == "lshift":
-				#set modifier to true
-					ModifierList.append("LSHIFT")
-				elif i == "lctrl":
-				#set modifier to true
-					ModifierList.append("LCTRL")
-				else:
-					KeypressList.append(i)
-			eco.sendHIDpack(eco.createHIDpack(KeypressList,ModifierList))
-			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
-
-	def delay(seconds):
-		from time import sleep
-		sleep(seconds)
-	
-	def type(inputs):	
-		emptyList = []
-		for char in inputs:
-			eco.sendHIDpack(eco.createHIDpack(char, emptyList))
-			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
-
-	def commandFinder(line):	
-		command = line.split(" ")[0]
-		return command
-	
-	#Lookup table	
-	LookUpTable = {
-
+	debug=False
+	## LOOKUP TABLE START ##	
+	LookUpScanCode = {
 		"a":"\x04",
 		"b":"\x05",
 		"c":"\x06",
@@ -230,7 +109,7 @@ class eco:
 		"keypad_.":"\x63"
 	}
 
-	LookUpTable2 = {
+	LookUpShiftLayer = {
 
 		"A":"a",
 		"B":"b",
@@ -295,94 +174,235 @@ class eco:
 		"&":"7",
 		"*":"8",
 		"(":"9",
-		")":"0"}
+		")":"0"
+	}
+	## LOOKUP TABLES FINISHED ##
+	## START BASIC ##
+	class basic:
+		def interprator(eds_lines):
+			# Line number to skip to after repeat has finished
+			skipdestination=-1
+			for line_no, file_line in enumerate(eds_lines):
+				# Getting rid of new line characters from input
+				line = file_line.rstrip("\r\n")
+
+				if(debug):
+					print("Line: " + str(line_no) + ", Command: " + line + ", Length: " + str(len(line)))
+
+				# Checks for skips caused by repeat function
+				if skipdestination == -1:
+					if(debug):
+						print("Command being interporated")
+
+					# Splitting line into command and command argument
+					current_command=eco.basic.getCommand(line)
+					current_arg=eco.basic.getArg(line)
+
+					if current_command == "TYPE":
+						eco.type(current_arg)
+					elif current_command == "PRESS":
+						eco.press(current_arg)
+					elif current_command == "DELAY":
+						timeToWait = float(current_arg)
+						# Check for invalid delay length
+						if(isnan(timeToWait)):
+							if(debug):
+								print("User passed attempted to use invalid delay length")
+								print("Argument: " + current_arg)
+							raise ValueError('User Error - Invalid Delay Length')
+						eco.basic.delay(timeToWait)
+					elif current_command == "REPEAT":
+						repetitions = int(current_arg)
+						# Check for invalid repeat length
+						if(isnan(timeToWait)):
+							if(debug):
+								print("User passed attempted to use invalid repeat length ")
+								print("Argument: " + current_arg)
+							raise ValueError('User Error - Invalid Repeat Length')
+						repeat_depth=1
+						repeat_length=-1
+
+						if(debug):
+							print("Repeat open on line: " + str(line_no))
+
+						# Looking for outer repeat end
+						for cur_length, line_check in enumerate(eds_lines[line_no+1:]):
+							if "REPEAT" in line_check:
+								if(debug):
+									print("Repeat open on line: " + str(cur_length+line_no+1))
+								repeat_depth +=1
+							if "END" in line_check:
+								if(debug):
+									print("Repeat close on line: " + str(cur_length+line_no+1))
+								repeat_depth -=1
+								repeat_end=repeat_length
+							if (counts == 0):
+								print("Outer repeat found")
+								break
+
+						# Error checking number of repeats
+						if (counts != 0):
+							if(debug):
+								print("User did not close repeat correctly")
+								print("Repeat location: " + str(line_no))
+							raise ValueError('User Error - Unclosed Repeat')
+
+						repeat_end=line_no+1+repeat_end
+						if(debug):
+							print("Repeat Code Start: " + str(line_no+1))
+							print("Repeat Code End: " + str(repeat_end-1))
+
+						eco.basic.repeat(reps, lines[line_no+1:repeat_end-1])
+						skipdestination=repeat_end
+
+						if(debug): 
+							print("Skipping to: " + str(skipdestination))
+					elif current_command == "CMT": 
+						if(debug):
+							print("User Comment: " + current_arg)
+					else:
+						if(debug):
+							print("User did not give valid command")
+							print("Command: " + current_command)
+						raise ValueError('User Error - Invalid command')
+				else:
+					if(debug):
+						print("Skipping Command: " str(line_no))
+
+					if line_no == skipdestination:
+						if(debug):
+							print("Skipping stopped")
+						skipdestination=-1
+
+		# Repeat Function
+		def repeat(reps, eds_lines):
+			for i in range(int(reps)):
+				eco.reader(lines)
+		# Delay Function
+		def delay(seconds):
+			from time import sleep
+			sleep(seconds)
+
+		# Gets command from line
+		def getCommand(line):	
+			command = line.split(" ")[0]
+			return command
+
+		# gets argument from line
+		def getArg(line):	
+			arg = line[line.find(" ")+1:];
+			return arg
+	## END BASIC ##
+
+	# Press function
+	def press (commandString):
+		if commandString.find("++") != -1:
+			print ("error")
+		else:	
+			commands = commandString.lower()
+	
+			commandlist = commands.split("+")		
+			ModifierList = [
+				["LCTRL", False],
+				["LSHIFT", False],
+				["LALT", False],
+				["LGUI", False],
+				["RCTRL", False],
+				["RSHIFT", False],
+				["RALT", False],
+				["RGUI", False],
+			]
+			KeyList = []
+			for command in commandlist:
+				if(debug):
+					print("Key found in press function: " + command)
+
+				if command == "lctrl":
+					ModifierList[7] = ["LCTRL", True]
+				elif command == "lshift":
+					ModifierList[6] = ["LSHIFT", True]
+				elif command == "lalt":
+					ModifierList[5] = ["LALT", True]
+				elif command == "lgui":
+					ModifierList[4] = ["LGUI", True]
+				elif command == "rctrl":
+					ModifierList[3] = ["RCTRL", True]
+				elif command == "rshift":
+					ModifierList[2] = ["RSHIFT", True]
+				elif command == "ralt":
+					ModifierList[1] = ["RALT", True]
+				elif command == "rgui":
+					ModifierList[0] = ["RGUI", True]
+				else:
+					KeyList.append(i)
+
+			eco.sendHIDpack(eco.createHIDpack(KeyList,ModifierList))
+			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+	
+	def type(textString):	
+		emptyList = []
+		for char in textString:
+			eco.sendHIDpack(eco.createHIDpack(char, emptyList))
+			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	#Pass a vector into the function for scancodes
-	def createHIDpack(ScanCodes = [], modifiers = []):
-		RGUI = False
-		RALT = False
-		RSHIFT = False
-		RCTRL = False
-		LGUI = False
-		LALT = False
-		LSHIFT = False
-		LCTRL = False
-		length = 0
-		x = 0
+	def createHIDpack(KeyList = [], ModifierList = []):
+		packet_length = 0
+		x = 0 # What does this do?
 		binarystring = ""
-		HexValues = {}
-		#Formulate a lookup table for the scan codes 
-		for i in ScanCodes:
+		ScanCodes = {}
+		# Gets hexs values for keys 
+		for key in KeyList:
 			x = x + 1
-			if str(i) in eco.LookUpTable:
-				HexValues["Value{0}".format(x)] = eco.LookUpTable[i] 
-			elif str(i) in eco.LookUpTable2:
+			if str(key) in eco.LookUpScanCode:
+				ScanCodes["Value{0}".format(x)] = eco.LookUpScanCode[key] 
+			elif str(key) in eco.LookUpShiftLayer:
 				LSHIFT = True
-				HexValues["Value{0}".format(x)] = eco.LookUpTable[eco.LookUpTable2[i]]
-		for i in modifiers:
-			if i == "RGUI":
-				RGUI = True
-			if i == "RALT":
-				RALT = True
-			if i == "RSHIFT":
-				RSHIFT = True
-			if i == "RCTRL":
-				RCTRL = True
-			if i == "LGUI":
-				LGUI = True
-			if i == "LALT":
-				LALT = TrueP
-			if i == "LSHIFT":
-				LSHIFT = True
-			if i == "LCTRL":
-				LCTRL = True
+				ScanCodes["Value{0}".format(x)] = eco.LookUpScanCode[eco.LookUpShiftLayer[key]]
 
-		#Create the first byte in binary
-		FirstByte = eco.bitwise(RGUI,binarystring) + eco.bitwise(RALT,binarystring) + eco.bitwise(RSHIFT, binarystring) + eco.bitwise(RCTRL, binarystring) + eco.bitwise(LGUI, binarystring) + eco.bitwise(LALT, binarystring) + eco.bitwise(LSHIFT, binarystring) + eco.bitwise(LCTRL, binarystring) 
-	
-		print(FirstByte)
-
-		#Converts the first byte into int
-		FirstByte = int(FirstByte,2)
-	
-		#encodes the first byte to hex
-		FirstByte = chr(FirstByte).encode()
-	
-		#The second byte is always set to null.
-		NullByte = "\x00"
-	
-		#Start to build the hid packet
-		HIDpack = FirstByte + NullByte.encode()
-	
-		#Add the remaining hex values to the hid packet
-		for i in HexValues:
-			HIDpack = HIDpack + HexValues[i].encode()
+		ModiferByte = ""
+		for modifier, state in ModifierList:
+			if(state):
+				ModiferByte += 1
+			else:
+				ModiferByte += 0
 			
-		length = len(HexValues) + 2
-	
-		#Add the remainder of bytes as null bytes
-		while length != 8:
-			HIDpack = HIDpack + NullByte.encode()
-			length = length + 1
+		if(debug):
+			print(ModiferByte)
 
-		print(":".join("{:02x}".format(ord(c)) for c in HIDpack.decode()))
-		return HIDpack;
-
-	#function to create the first byte of the packet
-	def bitwise(modifier, binarystring):
-		if modifier == True:
-			binarystring = binarystring + "1"
-		else:
-			binarystring = binarystring + "0"
-		return binarystring
+		# Converts the first byte into int
+		ModiferByte = int(ModiferByte,2)
 	
+		# Encodes the first byte to binary literal
+		ModiferByte = chr(ModiferByte).encode()
+	
+		# The second byte is always set to null.
+		NullByte = b'\x00'
+	
+		# Start to build the hid packet
+		HIDpacket = FirstByte + NullByte
+		packet_length = 2
+	
+		# Add the remaining hex values to the hid packet
+		for HexValue in ScanCodes:
+			HIDpacket = HIDpacket + HexValue.encode()
+			packet_length += 1
+			
+		
+	
+		# Fill reset of packet with null bytes
+		while packet_length != 8:
+			HIDpacket = HIDpacket + NullByte
+			packet_length = packet_length + 1
+
+		print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
+		return HIDpacket;
 
 	#Function to send code to The overlord
-	def sendHIDpack(HIDpack):
+	def sendHIDpack(HIDpacket):
 		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 		# Writes packet to given path
 		fd = os.open(path, os.O_RDWR)
-		os.write(fd, HIDpack)
+		os.write(fd, HIDpacket)
 		os.close(fd)
 
-eco.reader(eco.payload.read().splitlines())	
