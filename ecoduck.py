@@ -353,21 +353,19 @@ class eco:
 		for key in textString:
 			eco.sendHIDpacket(eco.createHIDpacket(key, NoModifiers))
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
-
+r
 	#Pass a vector into the function for scancodes
 	def createHIDpacket(KeyList = [], ModifierList = []):
 		packet_length = 0
-		x = 0 # What does this do?
 		binarystring = ""
-		ScanCodes = {}
+		ScanCodes = []
 		# Gets hexs values for keys 
 		for key in KeyList:
-			x = x + 1
 			if str(key) in eco.LookUpScanCode:
-				ScanCodes["Value{0}".format(x)] = eco.LookUpScanCode[key] 
+				ScanCodes.append(eco.LookUpScanCode[key])
 			elif str(key) in eco.LookUpShiftLayer:
 				LSHIFT = True
-				ScanCodes["Value{0}".format(x)] = eco.LookUpScanCode[eco.LookUpShiftLayer[key]]
+				ScanCodes.append(eco.LookUpScanCode[eco.LookUpShiftLayer[key]])
 
 		ModifierStr = ""
 		for modifier, state in ModifierList:
