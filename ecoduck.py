@@ -336,17 +336,17 @@ class eco:
 				else:
 					KeyList.append(i)
 
-			eco.sendHIDpack(eco.createHIDpack(KeyList,ModifierList))
-			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+			eco.sendHIDpacket(eco.createHIDpacket(KeyList,ModifierList))
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 	
 	def type(textString):	
 		emptyList = []
 		for char in textString:
-			eco.sendHIDpack(eco.createHIDpack(char, emptyList))
-			eco.sendHIDpack(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+			eco.sendHIDpacket(eco.createHIDpacket(char, emptyList))
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	#Pass a vector into the function for scancodes
-	def createHIDpack(KeyList = [], ModifierList = []):
+	def createHIDpacket(KeyList = [], ModifierList = []):
 		packet_length = 0
 		x = 0 # What does this do?
 		binarystring = ""
@@ -399,7 +399,7 @@ class eco:
 		return HIDpacket;
 
 	#Function to send code to The overlord
-	def sendHIDpack(HIDpacket):
+	def sendHIDpacket(HIDpacket):
 		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 		# Writes packet to given path
 		fd = os.open(path, os.O_RDWR)
