@@ -267,7 +267,7 @@ class eco:
 						raise ValueError('User Error - Invalid command')
 				else:
 					if(debug):
-						print("Skipping Command: " str(line_no))
+						print("Skipping Command: " + str(line_no))
 
 					if line_no == skipdestination:
 						if(debug):
@@ -405,4 +405,44 @@ class eco:
 		fd = os.open(path, os.O_RDWR)
 		os.write(fd, HIDpacket)
 		os.close(fd)
+
+	def wait_for_disconnect():
+	# Loops till electrical tests fails
+	print("Waiting for device removal")
+	while(test_connection("/dev/hidg0",1)):
+		sleep(3)
+	print("Disconnected!")
+
+
+	def timeout_handler():
+		# Helper function for electrical_test
+		raise Execption("Timeout")
+
+	def test_connection(path, timeout):
+		# Checks for a led HID packet from the host - proves target is connected, then resets capslock if it is on
+		signal.signal(signal.SIGALRM, timeout_handler)
+		signal.alarm(timeout)
+		try:
+			write_report(b'\x00\x00\x39\x00\x00\x00\x00\x00',"/dev/hidg0")
+			write_report(b'\x00\x00\x00\x00\x00\x00\x00\x00',"/dev/hidg0")
+			fd = os.open(path, os.O_RDWR)
+			state=os.read(fd,4)
+			os.close(fd)
+			if(state == b'\x02'):
+				write_report(b'\x00\x00\x39\x00\x00\x00\x00\x00',"/dev/hidg0")
+				write_report(b'\x00\x00\x00\x00\x00\x00\x00\x00',"/dev/hidg0")
+				fd = os.open(path, os.O_RDWR)
+				state=os.read(fd,4)
+				os.close(fd)
+		except:
+			return False
+		signal.alarm(0)
+		return True
+
+	def get_target_ip():
+		fd = io.open("/var/lib/misc/dnsmasq.leases", "r")
+		firstline = fd.readline()
+		columns=firstline.split(" ")
+		print("Found target IP: " + columns[2])
+		return columns[2]
 
