@@ -380,7 +380,7 @@ class eco:
 		NullByte = b'\x00'
 	
 		# Start to build the hid packet
-		HIDpacket = FirstByte + NullByte
+		HIDpacket = ModiferByte + NullByte
 		packet_length = 2
 	
 		# Add the remaining hex values to the hid packet
