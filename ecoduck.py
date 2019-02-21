@@ -360,27 +360,29 @@ class eco:
 				LSHIFT = True
 				ScanCodes["Value{0}".format(x)] = eco.LookUpScanCode[eco.LookUpShiftLayer[key]]
 
-		ModiferByte = ""
+		ModifierByte = ""
 		for modifier, state in ModifierList:
+			if(debug):
+				print(modifier + ":"+state)
 			if(state):
-				ModiferByte += "1"
+				ModifierByte += "1"
 			else:
-				ModiferByte += "0"
+				ModifierByte += "0"
 			
 		if(eco.debug):
-			print(ModiferByte)
+			print(ModifierByte)
 
 		# Converts the first byte into int
-		ModiferByte = int(ModiferByte,2)
+		ModifierByte = int(ModifierByte,2)
 	
 		# Encodes the first byte to binary literal
-		ModiferByte = chr(ModiferByte).encode()
+		ModifierByte = chr(ModifierByte).encode()
 	
 		# The second byte is always set to null.
 		NullByte = b'\x00'
 	
 		# Start to build the hid packet
-		HIDpacket = ModiferByte + NullByte
+		HIDpacket = ModifierByte + NullByte
 		packet_length = 2
 	
 		# Add the remaining hex values to the hid packet
