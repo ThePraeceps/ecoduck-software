@@ -353,7 +353,7 @@ class eco:
 		for key in textString:
 			eco.sendHIDpacket(eco.createHIDpacket(key, NoModifiers))
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
-r
+
 	#Pass a vector into the function for scancodes
 	def createHIDpacket(KeyList = [], ModifierList = []):
 		packet_length = 0
