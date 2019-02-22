@@ -353,7 +353,7 @@ class eco:
 				["RSHIFT", False],
 				["RALT", False],
 				["RGUI", False],
-			]))
+			]),eco.path)
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', eco.path)
 
 	#Pass a vector into the function for scancodes
