@@ -355,6 +355,7 @@ class eco:
 				["RGUI", False],
 			]),eco.path)
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', eco.path)
+			sleep(0.1)
 
 	#Pass a vector into the function for scancodes
 	def createHIDpacket(KeyList, ModifierList):
