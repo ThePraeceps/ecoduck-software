@@ -49,7 +49,6 @@ def reverse_shell_listener():
 		codelines=shellcode.split("\n")
 		for line in codelines:
 			print("Sending: " + line)
-			print(data) # Print the output of the command.
 		print("Letting copy finish")
 		sleep(5)
 		print("Copy should have finished")
