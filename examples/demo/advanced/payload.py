@@ -12,7 +12,7 @@ $destinationFolder = "$mydrive\\$foldername"
 if (!(Test-Path -path $destinationFolder)) {New-Item $destinationFolder -Type Directory}
 $target = [Environment]::GetFolderPath("MyDocuments")
 ls $target
-Copy-Item -Path $target\\* -Destination $destinationFolder -recurse -Force
+Copy-Item -Path $target\\* -Destination $destinationFolder -recurse -Force -verbose
 Write-Host "The file sync is complete." """
 
 def recv_timeout(the_socket,timeout=1): # Receives from socket with a timeout
