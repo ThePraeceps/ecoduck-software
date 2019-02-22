@@ -364,7 +364,7 @@ class eco:
 			if str(key) in eco.LookUpScanCode:
 				ScanCodes.append(eco.LookUpScanCode[key])
 			elif str(key) in eco.LookUpShiftLayer:
-				LSHIFT = True
+				ModifierList[6] = ["LSHIFT", True]
 				ScanCodes.append(eco.LookUpScanCode[eco.LookUpShiftLayer[key]])
 
 		ModifierStr = ""
