@@ -462,8 +462,8 @@ class eco:
 		counter=0
 		for line in lines:
 			usbdata=line.split(" ")
-			if(usbdata[9] != "0000"):
-				fingerprints.append(usbdata[10])
+			if(usbdata[-2] != "0000"):
+				fingerprints.append(usbdata[-1])
 		for data in fingerprints:
 			if(data == "00ff"):
 				counter += 1
