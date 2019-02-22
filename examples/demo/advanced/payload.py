@@ -133,6 +133,6 @@ while(1):
 		else:
 			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
 		os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-		sleep(2)
+		sleep(4)
 		eco.wait_for_disconnect()
 
