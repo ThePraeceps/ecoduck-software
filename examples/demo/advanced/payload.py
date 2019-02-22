@@ -61,6 +61,8 @@ def payload():
 	# Copy Documents Directory to Flash Drive
 	httpd.server_close()
 	httplistener.join()
+	eco.type("exit")
+	eco.press("ENTER")
 
 # Ensures simple gadget is selected
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
