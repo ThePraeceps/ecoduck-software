@@ -456,4 +456,7 @@ class eco:
 
 	def get_target_os():
 		usbrequests=check_output("dmesg | tac | sed '/^.*new device is high-speed/q' | tac | grep \"USB DWC2 REQ 80 06 03\"",shell=True).decode()[:-1]
-		
+		lines=usbrequests.split("\n")
+		fingerprint=[]
+		for line in lines
+			print(line)
