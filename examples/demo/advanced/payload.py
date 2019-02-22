@@ -1,6 +1,6 @@
 from ecoduck import eco
 
-import os,signal,io,http.server,socketserver, socket
+import os,signal,io,http.server,socketserver,socket,struct,sys,time
 from time import sleep
 from subprocess import Popen, PIPE, check_output
 
