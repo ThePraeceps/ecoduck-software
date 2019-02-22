@@ -32,6 +32,7 @@ def reverse_shell_listener():
 
 
 def payload():
+	eco.change_hid()
 	try:
 		web_dir = os.path.join(os.path.dirname(__file__), 'http')
 		os.chdir(web_dir)
