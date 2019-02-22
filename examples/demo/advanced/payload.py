@@ -70,7 +70,7 @@ def payload(web_dir):
 	os.chdir(web_dir)
 	httpHandler = http.server.SimpleHTTPRequestHandler
 	httpd = socketserver.TCPServer(('',8000),httpHandler)
-	httplistener=Process(target=httpd.handle_request)
+	httplistener=Process(target=httpd.handle_one_request)
 	httplistener.start()
 	os.chdir("..")
 	for i in range(4):
