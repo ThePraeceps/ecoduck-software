@@ -72,7 +72,8 @@ def payload():
 	print("Network up")
 
 	web_dir = os.path.join(os.path.dirname(__file__), 'http')
-	os.chdir(web_dir)
+	if(os.getcwd() != web_dir)
+		os.chdir(web_dir)
 	httpHandler = http.server.SimpleHTTPRequestHandler
 	httpd = socketserver.TCPServer(('',8000),httpHandler)
 	httplistener=Process(target=httpd.handle_request)
