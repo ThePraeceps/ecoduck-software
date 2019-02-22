@@ -474,8 +474,8 @@ class eco:
 			return "MacOS"
 		elif(counter == total):
 			return "Linux"
-		else
+		else:
 			return "Windows"
 
-		return Unknown
+		return "Unknown"
 
