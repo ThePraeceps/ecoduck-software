@@ -431,14 +431,14 @@ class eco:
 		signal.signal(signal.SIGALRM, timeout_handler)
 		signal.alarm(timeout)
 		try:
-			write_report(b'\x00\x00\x39\x00\x00\x00\x00\x00',"/dev/hidg0")
-			write_report(b'\x00\x00\x00\x00\x00\x00\x00\x00',"/dev/hidg0")
+			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00')
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 			fd = os.open(path, os.O_RDWR)
 			state=os.read(fd,4)
 			os.close(fd)
 			if(state == b'\x02'):
-				write_report(b'\x00\x00\x39\x00\x00\x00\x00\x00',"/dev/hidg0")
-				write_report(b'\x00\x00\x00\x00\x00\x00\x00\x00',"/dev/hidg0")
+				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00')
+				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 				fd = os.open(path, os.O_RDWR)
 				state=os.read(fd,4)
 				os.close(fd)
@@ -454,3 +454,6 @@ class eco:
 		print("Found target IP: " + columns[2])
 		return columns[2]
 
+	def get_target_os():
+		usbrequests=check_output("dmesg | tac | sed '/^.*new device is high-speed/q' | tac | grep \"USB DWC2 REQ 80 06 03\"",shell=True).decode()[:-1]
+		
