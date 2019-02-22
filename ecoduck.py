@@ -355,7 +355,7 @@ class eco:
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	#Pass a vector into the function for scancodes
-	def createHIDpacket(KeyList = [], ModifierList = []):
+	def createHIDpacket(KeyList, ModifierList):
 		packet_length = 0
 		binarystring = ""
 		ModifierByte = 0
