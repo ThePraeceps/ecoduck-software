@@ -428,7 +428,7 @@ class eco:
 
 	def test_connection(path, timeout):
 		# Checks for a led HID packet from the host - proves target is connected, then resets capslock if it is on
-		signal.signal(signal.SIGALRM, timeout_handler)
+		signal.signal(signal.SIGALRM, eco.timeout_handler)
 		signal.alarm(timeout)
 		try:
 			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00')
