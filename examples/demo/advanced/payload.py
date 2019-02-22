@@ -25,7 +25,7 @@ while(1):
 	if(electrical_test("/dev/hidg0", 1)):
 		print("Device connected to target")
 		# OS Fingerprinting
-		detectedos = check_output(__location__+"/fingerprint-host.sh").decode()[:-1]
+		detectedos = eco.get_target_os()
 		if "Windows" == detectedos:
 			os.system("echo \"\" >  /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
 			os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
