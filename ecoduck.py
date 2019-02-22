@@ -416,6 +416,7 @@ class eco:
 		fd = os.open(eco.path, os.O_RDWR)
 		os.write(fd, HIDpacket)
 		os.close(fd)
+		
 	# Loops till connection tests fails
 	def wait_for_disconnect():
 		print("Waiting for device removal")
