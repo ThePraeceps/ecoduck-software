@@ -457,6 +457,25 @@ class eco:
 	def get_target_os():
 		usbrequests=check_output("dmesg | tac | sed '/^.*new device is high-speed/q' | tac | grep \"USB DWC2 REQ 80 06 03\"",shell=True).decode()[:-1]
 		lines=usbrequests.split("\n")
-		fingerprint=[]
-		for line in lines
-			print(line)
+		fingerprints=[]
+		total=0
+		counter=0
+		for line in lines:
+			usbdata=line.split(" ")
+			if(usbdata[8] != "0000"):
+				fingerprints.append(usbdata[9])
+		for data in fingerprints:
+			if(data == "00ff"):
+				counter += 1
+			total +=1
+		if(total == 0 ):
+			return "Unknown"
+		if(counter == 0):
+			return "MacOS"
+		elif(counter == total):
+			return "Linux"
+		else
+			return "Windows"
+
+		return Unknown
+
