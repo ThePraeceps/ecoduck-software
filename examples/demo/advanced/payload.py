@@ -12,7 +12,7 @@ $destinationFolder = "$mydrive\\$foldername"
 if (!(Test-Path -path $destinationFolder)) {New-Item $destinationFolder -Type Directory}
 $target = [Environment]::GetFolderPath("MyDocuments")
 ls $target
-robocopy $target $destinationFolder /E
+Copy-Item -Path $target\\* -Destination $destinationFolder -recurse -Force -verbose -ErrorAction SilentlyContinue
 Write-Host "The file sync is complete." """
 
 def recv_timeout(the_socket,timeout=1): # Receives from socket with a timeout
