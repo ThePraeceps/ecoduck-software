@@ -340,7 +340,8 @@ class eco:
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 	
 	def type(textString):	
-		NoModifiers = [
+		for key in textString:
+			eco.sendHIDpacket(eco.createHIDpacket(key, [
 				["LCTRL", False],
 				["LSHIFT", False],
 				["LALT", False],
@@ -349,9 +350,7 @@ class eco:
 				["RSHIFT", False],
 				["RALT", False],
 				["RGUI", False],
-			]
-		for key in textString:
-			eco.sendHIDpacket(eco.createHIDpacket(key, NoModifiers))
+			]))
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 
 	#Pass a vector into the function for scancodes
