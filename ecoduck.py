@@ -403,7 +403,7 @@ class eco:
 		while packet_length != 8:
 			HIDpacket = HIDpacket + NullByte
 			packet_length = packet_length + 1
-		if(debug):
+		if(eco.debug):
 			print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		return HIDpacket;
 
