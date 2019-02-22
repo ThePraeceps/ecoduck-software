@@ -403,8 +403,8 @@ class eco:
 		while packet_length != 8:
 			HIDpacket = HIDpacket + NullByte
 			packet_length = packet_length + 1
-
-		print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
+		if(debug):
+			print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		return HIDpacket;
 
 	#Function to send code to The overlord
