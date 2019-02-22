@@ -55,7 +55,7 @@ def reverse_shell_listener():
 			print(data) # Print the output of the command.
 		print("Letting copy finish")
 		print("Copy should have finished")
-		s.shutdown()
+		s.close()
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
 		exit() # Using [ctrl+c] will terminate the listener.
