@@ -421,7 +421,7 @@ class eco:
 	# Loops till connection tests fails
 	def wait_for_disconnect():
 		print("Waiting for device removal")
-		while(eco.test_connection("/dev/hidg0",1)):
+		while(eco.test_connection("/dev/hidg0",2)):
 			sleep(3)
 		print("Disconnected!")
 
