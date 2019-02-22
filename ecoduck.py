@@ -339,8 +339,8 @@ class eco:
 				else:
 					KeyList.append(command)
 
-			eco.sendHIDpacket(eco.createHIDpacket(KeyList,ModifierList))
-			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+			eco.sendHIDpacket(eco.createHIDpacket(KeyList,ModifierList), eco.path)
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', eco.path)
 	
 	def type(textString):	
 		for key in textString:
@@ -354,7 +354,7 @@ class eco:
 				["RALT", False],
 				["RGUI", False],
 			]))
-			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', eco.path)
 
 	#Pass a vector into the function for scancodes
 	def createHIDpacket(KeyList, ModifierList):
@@ -411,12 +411,12 @@ class eco:
 		return HIDpacket;
 
 	#Function to send code to The overlord
-	def sendHIDpacket(HIDpacket):
+	def sendHIDpacket(HIDpacket, path):
 		# Writes packet to given path
-		fd = os.open(eco.path, os.O_RDWR)
+		fd = os.open(path, os.O_RDWR)
 		os.write(fd, HIDpacket)
 		os.close(fd)
-		
+
 	# Loops till connection tests fails
 	def wait_for_disconnect():
 		print("Waiting for device removal")
@@ -434,14 +434,14 @@ class eco:
 		signal.signal(signal.SIGALRM, eco.timeout_handler)
 		signal.alarm(timeout)
 		try:
-			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00')
-			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', path)
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', path)
 			fd = os.open(path, os.O_RDWR)
 			state=os.read(fd,4)
 			os.close(fd)
 			if(state == b'\x02'):
-				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00')
-				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', path)
+				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', path)
 				fd = os.open(path, os.O_RDWR)
 				state=os.read(fd,4)
 				os.close(fd)
