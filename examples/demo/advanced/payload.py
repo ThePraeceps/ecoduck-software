@@ -11,6 +11,7 @@ $mydrive=(GWmi Win32_LogicalDisk | ?{$_.VolumeName -eq 'WINDOWS'} | %{$_.DeviceI
 $destinationFolder = "$mydrive\\$foldername"
 if (!(Test-Path -path $destinationFolder)) {New-Item $destinationFolder -Type Directory}
 $target = [Environment]::GetFolderPath("MyDocuments")
+ls $target
 Get-ChildItem -Path $target -Recurse -Include *  | Copy-Item -Destination $destinationFolder -verbose
 Write-Host "The file sync is complete." """
 
