@@ -413,7 +413,7 @@ class eco:
 	#Function to send code to The overlord
 	def sendHIDpacket(HIDpacket):
 		# Writes packet to given path
-		fd = os.open(path, os.O_RDWR)
+		fd = os.open(eco.path, os.O_RDWR)
 		os.write(fd, HIDpacket)
 		os.close(fd)
 	# Loops till connection tests fails
