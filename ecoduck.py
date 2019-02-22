@@ -358,6 +358,7 @@ class eco:
 	def createHIDpacket(KeyList = [], ModifierList = []):
 		packet_length = 0
 		binarystring = ""
+		ModifierByte = 0
 		ScanCodes = []
 		# Gets hexs values for keys 
 		for key in KeyList:
