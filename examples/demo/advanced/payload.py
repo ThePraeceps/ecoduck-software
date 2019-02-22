@@ -26,7 +26,7 @@ def recv_timeout(the_socket,timeout=1): # Receives from socket with a timeout
 		elif time.time()-begin>timeout*2:
 			break
 		try:
-			data=the_socket.recv(32) # recieve data
+			data=the_socket.recv(4096) # recieve data
 			if data:
 				strdata=data.decode("utf-8") # Decode data to string
 				total_data += strdata # Add to total data
