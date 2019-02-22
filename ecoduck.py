@@ -3,6 +3,7 @@
 import os,signal,io,array
 from subprocess import Popen, PIPE, check_output
 from math import isnan
+from time import sleep
 
 class eco:
 	debug=False
@@ -280,7 +281,6 @@ class eco:
 				eco.reader(lines)
 		# Delay Function
 		def delay(seconds):
-			from time import sleep
 			sleep(seconds)
 
 		# Gets command from line
