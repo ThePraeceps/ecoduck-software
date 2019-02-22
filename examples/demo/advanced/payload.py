@@ -65,7 +65,7 @@ def payload():
 	eco.change_hid()
 	connected=False
 	print("Waiting for network to come up")
-	while(!connected):
+	while(not connected):
 		response = os.system("ping -c 1 192.168.10.101")
 		if(response == 0):
 			connected=True
