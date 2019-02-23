@@ -446,7 +446,7 @@ class eco:
 			eco.path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 
 
-	def timeout_handler():
+	def timeout_handler(signum, stackframe):
 		# Helper function for connection functions
 		raise Execption("Timeout")
 
@@ -569,6 +569,7 @@ class eco:
 			return "windows"
 		raise Execption("Could not identify OS")
 		return "n/a"
+
 	def setup_gadgets():
 		conf_check = Path("/sys/kernel/config/usb_gadget/ecoduck-simple")
 		if(conf_check.exists()):
@@ -597,4 +598,4 @@ class eco:
 			print("!!!! WARNING !!!!")
 			print("Device appears NOT to be a raspberry pi")
 			print("Running in testing mode")
-			eco.gadget_mode("simple")
+			eco.gadget_mode="simple"
