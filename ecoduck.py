@@ -546,12 +546,6 @@ class eco:
 							return data[0]
 		return "n/a"
 
-		if(eco.debug>=1):
-			print("Found target IP: " + columns[2])
-		# Check IP is valid
-		# Check it is not host
-		return columns[2]
-
 	def get_os():
 		if(not eco.onPi):
 			return "n/a"
