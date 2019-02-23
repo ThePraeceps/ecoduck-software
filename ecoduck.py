@@ -587,7 +587,7 @@ class eco:
 		if(os.geteuid() != 0):
 			raise Execption("Script not ran as root")
 		if(eco.onPi):
-			if(not os.path.exists("/sys/kernel/config/usb_gadget"):
+			if(not os.path.exists("/sys/kernel/config/usb_gadget")):
 				raise Execption("Device does not appear to have been configured to run ecoduck software")
 			else:
 				eco.setup_gadgets()
