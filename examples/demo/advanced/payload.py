@@ -88,6 +88,7 @@ def payload(web_dir, httpd):
 
 
 # Setting up HTTP server
+__location__=os.path.realpath(__file__)
 web_dir = os.path.abspath(os.path.join(__location__, 'http'))
 os.chdir(web_dir)
 httpHandler = http.server.SimpleHTTPRequestHandler
