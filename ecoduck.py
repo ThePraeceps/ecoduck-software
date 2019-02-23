@@ -517,6 +517,14 @@ class eco:
 			raise Exception("Invaid HID timeout")
 		if(not eco.onPi):
 			return True
+		fd=os.open(eco.path, os.O_NONBLOCK)
+		while(1):
+			try:
+				os.read(fd,4)
+			except:
+				break
+
+
 		signal.signal(signal.SIGALRM, eco.timeout_handler)
 		signal.alarm(timeout)
 		try:
