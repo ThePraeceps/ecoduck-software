@@ -534,7 +534,7 @@ class eco:
 		fd = io.open("/var/lib/misc/dnsmasq.leases", "r")
 		firstline = fd.readline()
 		columns=firstline.split(" ")
-		if(debug):
+		if(eco.debug>=1):
 			print("Found target IP: " + columns[2])
 		# Check IP is valid
 		# Check it is not host
