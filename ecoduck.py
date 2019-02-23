@@ -523,7 +523,7 @@ class eco:
 				os.read(fd,4)
 			except:
 				break
-
+				
 
 		signal.signal(signal.SIGALRM, eco.timeout_handler)
 		signal.alarm(timeout)
