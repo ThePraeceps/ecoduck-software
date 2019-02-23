@@ -3,11 +3,15 @@ from ecoduck import eco
 
 advanced=False
 infinite=True
-default_gadget="simple"
-default_script="default"
+
 os_payload_detection=True
 os_gadget_detection=True
+
+default_gadget="simple"
+default_script="default"
+
 payload_dir = os.path.abspath("/usr/ecoduck/payloads/")
+
 if(os.path.exists("/boot/ecoduck.conf")):
 	# Parse options file
 	# Advanced Mode
