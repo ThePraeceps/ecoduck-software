@@ -535,7 +535,7 @@ class eco:
 
 		neighbors=check_output("ip neighbor", shell=True).decode().split("\n")
 		for entries in neighbors:
-			data = entires.split(" ")
+			data = entries.split(" ")
 			if("bridge" == data[2]):
 				if("192.168.10" == data[0][0:9]):
 					if("reachable" == data[5]):
