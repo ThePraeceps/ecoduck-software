@@ -574,8 +574,8 @@ class eco:
 		if(os.path.exists("/sys/kernel/config/usb_gadget/ecoduck-simple")):
 			print("Gadgets already configured")
 			return
-		script_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"gadget_configure.sh")
-		call("/bin/bash" + script_path)
+		script_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"gadget-configure.sh")
+		call(script_path)
 
 
 	def __init__():
