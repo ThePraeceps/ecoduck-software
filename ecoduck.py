@@ -535,10 +535,11 @@ class eco:
 
 		neighbors=check_output("ip neighbor", shell=True).decode().split("\n")
 		for entries in neighbors:
-			if("bridge" == entries[2]):
-				if("192.168.10" == entries[0]):
-					if("reachable" == entries[5]):
-						return entries[0]
+			data = entires.split(" ")
+			if("bridge" == data[2]):
+				if("192.168.10" == data[0][0:9]):
+					if("reachable" == data[5]):
+						return data[0]
 					else:
 						response = os.system("ping -W 1 -c 1 " + entries[0])
 						if(response == 0):
