@@ -268,7 +268,7 @@ class eco:
 						if(eco.debug>=1):
 							print("User did not give valid command")
 							print("Command: " + current_command)
-						raise Execption('User Error - Invalid command')
+						raise Exception('User Error - Invalid command')
 				else:
 					if(eco.debug>=3):
 						print("Skipping Command: " + str(line_no))
@@ -432,7 +432,7 @@ class eco:
 			elif(gadget_mode == "linux"):
 				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
 			else:
-				raise Execption("Invalid gadget mode selected")
+				raise Exception("Invalid gadget mode selected")
 			sleep(2)
 		eco.gadget_mode=gadget_mode
 		eco.update_hid_path()
@@ -448,12 +448,12 @@ class eco:
 
 	def timeout_handler(signum, stackframe):
 		# Helper function for connection functions
-		raise Execption("Timeout")
+		raise Exception("Timeout")
 
 	# Loops till connection tests fails
 	def wait_for_keyboard_state(state, timeout=0):
 		if(not timeout >= 0):
-			raise Execption("Invaid HID timeout")
+			raise Exception("Invaid HID timeout")
 		if(timeout > 0):
 			signal.signal(signal.SIGALRM, eco.timeout_handler)
 			signal.alarm(timeout)
@@ -469,12 +469,12 @@ class eco:
 
 	def wait_for_network_state(state, timeout=0):
 		if(not timeout >= 0):
-			raise Execption("Invaid Network timeout")
+			raise Exception("Invaid Network timeout")
 		if(timeout > 0):
 			signal.signal(signal.SIGALRM, eco.timeout_handler)
 			signal.alarm(timeout)
 		if(eco.gadget_mode == "simple"):
-			raise Execption("Networking attempted on simple gadget mode")
+			raise Exception("Networking attempted on simple gadget mode")
 		try:
 			while(eco.is_network_connected() != state):
 				sleep(3)
@@ -490,7 +490,7 @@ class eco:
 		if(not eco.onPi):
 			return True
 		if(eco.gadget_mode == "simple"):
-			raise Execption("Networking attempted on simple gadget mode")
+			raise Exception("Networking attempted on simple gadget mode")
 		if(not eco.is_hid_connected()):
 			return False
 		ip=eco.get_ip()
@@ -503,7 +503,7 @@ class eco:
 	def is_hid_connected(timeout=2):
 		# Checks for a led HID packet from the host - proves target is connected, then resets capslock if it is on
 		if(not timeout > 0):
-			raise Execption("Invaid HID timeout")
+			raise Exception("Invaid HID timeout")
 		if(not eco.onPi):
 			return True
 		signal.signal(signal.SIGALRM, eco.timeout_handler)
@@ -529,7 +529,7 @@ class eco:
 		if(not eco.onPi):
 			return "192.168.10.101"
 		if(eco.gadget_mode == "simple"):
-			raise Execption("Networking not available on simple gadget")
+			raise Exception("Networking not available on simple gadget")
 		if(not eco.is_hid_connected()):
 			return "n/a"
 
@@ -570,7 +570,7 @@ class eco:
 				counter += 1
 			total +=1
 		if(total == 0 ):
-			raise Execption("Could not identify OS")
+			raise Exception("Could not identify OS")
 			return "n/a"
 		if(counter == 0):
 			return "macos"
@@ -578,7 +578,7 @@ class eco:
 			return "linux"
 		else:
 			return "windows"
-		raise Execption("Could not identify OS")
+		raise Exception("Could not identify OS")
 		return "n/a"
 
 	def setup_gadgets():
@@ -596,10 +596,10 @@ class eco:
 		if(platform.machine() != 'armv6l'):
 			eco.onPi=False
 		if(os.geteuid() != 0):
-			raise Execption("Script not ran as root")
+			raise Exception("Script not ran as root")
 		if(eco.onPi):
 			if(not os.path.exists("/sys/kernel/config/usb_gadget")):
-				raise Execption("Device does not appear to have been configured to run ecoduck software")
+				raise Exception("Device does not appear to have been configured to run ecoduck software")
 			else:
 				eco.setup_gadgets()
 				eco.set_gadget_mode("simple")
