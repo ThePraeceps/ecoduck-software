@@ -533,11 +533,11 @@ class eco:
 		if(not eco.is_hid_connected()):
 			return "n/a"
 
-		neighbors=check_output("ip neighbor", shell=True).decode().split("\n")
+		neighbors=check_output("ip neighbor", shell=True).decode()[-1].split("\n")
 		for entries in neighbors:
 			data = entries.split(" ")
 			if("bridge" == data[2]):
-				if("192.168.10" == data[0][0:9]):
+				if("192.168.10" == data[0][:10]):
 					if("reachable" == data[5]):
 						return data[0]
 					else:
