@@ -533,7 +533,7 @@ class eco:
 		if(not eco.is_hid_connected()):
 			return "n/a"
 
-		neighbors=check_output("ip neighbor", shell=True).decode()[-1].split("\n")
+		neighbors=check_output("ip neighbor", shell=True).decode()[:-1].split("\n")
 		for entries in neighbors:
 			data = entries.split(" ")
 			if("bridge" == data[2]):
