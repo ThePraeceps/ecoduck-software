@@ -7,6 +7,8 @@ infinite=True
 os_payload_detection=True
 os_gadget_detection=True
 
+wait_for_disconnect=True
+
 default_gadget="simple"
 default_script="default"
 
@@ -51,13 +53,16 @@ while(True)
 				eco.set_gadget_mode(os)
 		else:
 			eco.set_gadget_mode(default_gadget)
-
-		if(advanced):
-			import payload
-		else:
-			payload_reader = open("myfile.txt", "r", encoding="utf-8")
-			eco.basic.interprator(payload_reader.readlines())
-			payload_reader.close()
+		if(os.path.exists(payload)):
+			if(advanced):
+				import payload
+			else:
+				payload_reader = open("myfile.txt", "r", encoding="utf-8")
+				eco.basic.interprator(payload_reader.readlines())
+				payload_reader.close()
 		if(infinite==False):
 			break
+		if(wait_for_disconnect):
+			eco.wait_for_keyboard_state(False)
+		eco.set_gadget_mode("simple")
 
