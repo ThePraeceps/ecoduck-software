@@ -583,7 +583,7 @@ class eco:
 		# Making sure device is a raspberry
 		if(platform.system() != "Linux"):
 			eco.onPi=False
-		if(platform.machine() != "armv61"):
+		if(platform.machine() != 'armv61'):
 			eco.onPi=False
 		if(os.geteuid() != 0):
 			raise Execption("Script not ran as root")
@@ -599,3 +599,6 @@ class eco:
 			print("Device appears NOT to be a raspberry pi")
 			print("Running in testing mode")
 			eco.gadget_mode="simple"
+
+def __import__():
+	eco.__init__()
