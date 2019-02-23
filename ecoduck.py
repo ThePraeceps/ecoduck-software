@@ -409,14 +409,25 @@ class eco:
 		return HIDpacket;
 
 	#Function to send code to The overlord
-	def sendHIDpacket(HIDpacket):
+	def sendHIDpacket(HIDpacket, timeout=4):
 		# Writes packet to given path
-		if(eco.onPi):
-			fd = os.open(eco.path, os.O_RDWR)
-			os.write(fd, HIDpacket)
-			os.close(fd)
-		else:
-			print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
+		if(not os.path.exists(eco.path)):
+			raise Exception("Gadget no longer exists")
+		if(not timeout > 0):
+			raise Exception("Invalid send timeout")
+		try:
+			signal.signal(signal.SIGALRM, eco.timeout_handler)
+			signal.alarm(timeout)
+			if(eco.onPi):
+				fd = os.open(eco.path, os.O_RDWR)
+				os.write(fd, HIDpacket)
+				os.close(fd)
+			else:
+				print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
+		except:
+			return False
+		signal.alarm(0)
+		return True
 
 	def set_gadget_mode(gadget_mode):
 		if(eco.onPi):
@@ -509,14 +520,14 @@ class eco:
 		signal.signal(signal.SIGALRM, eco.timeout_handler)
 		signal.alarm(timeout)
 		try:
-			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00')
-			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', timeout)
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', timeout)
 			fd = os.open(eco.path, os.O_RDWR)
 			state=os.read(fd,4)
 			os.close(fd)
 			if(state == b'\x02'):
-				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00')
-				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', timeout)
+				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', timeout)
 				fd = os.open(eco.path, os.O_RDWR)
 				state=os.read(fd,4)
 				os.close(fd)
