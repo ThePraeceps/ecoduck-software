@@ -541,9 +541,9 @@ class eco:
 					if("reachable" == data[5]):
 						return data[0]
 					else:
-						response = os.system("ping -W 1 -c 1 " + entries[0])
+						response = os.system("ping -W 1 -c 1 " + data[0])
 						if(response == 0):
-							return entries[0]
+							return data[0]
 		return "n/a"
 
 		if(eco.debug>=1):
