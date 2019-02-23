@@ -494,9 +494,10 @@ class eco:
 		if(not eco.is_hid_connected()):
 			return False
 		ip=eco.get_ip()
-		response = os.system("ping -W 1 -c 1 " + ip)
-		if(response == 0):
-			return True
+		if(ip not "n/a"):
+			response = os.system("ping -W 1 -c 1 " + ip)
+			if(response == 0):
+				return True
 		return False
 
 	def is_hid_connected(timeout=2):
@@ -531,9 +532,19 @@ class eco:
 			raise Execption("Networking not available on simple gadget")
 		if(not eco.is_hid_connected()):
 			return "n/a"
-		fd = io.open("/var/lib/misc/dnsmasq.leases", "r")
-		firstline = fd.readline()
-		columns=firstline.split(" ")
+
+		neighbors=check_output("ip neighbor", shell=True).decode().split("\n")
+		for entries in neighbors:
+			if("bridge" in entries[2]):
+				if("192.168.10" in entries[0]):
+					if("reachable" in entries[5]):
+						return entries[0]
+					else:
+						response = os.system("ping -W 1 -c 1 " + entries[0])
+						if(response == 0):
+							return entries[0]
+		return "n/a"
+
 		if(eco.debug>=1):
 			print("Found target IP: " + columns[2])
 		# Check IP is valid
