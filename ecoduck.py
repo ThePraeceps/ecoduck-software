@@ -494,7 +494,7 @@ class eco:
 		if(not eco.is_hid_connected()):
 			return False
 		ip=eco.get_ip()
-		if(ip not "n/a"):
+		if(ip != "n/a"):
 			response = os.system("ping -W 1 -c 1 " + ip)
 			if(response == 0):
 				return True
