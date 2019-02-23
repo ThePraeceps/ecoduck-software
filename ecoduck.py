@@ -538,7 +538,7 @@ class eco:
 			data = entries.split(" ")
 			if("bridge" == data[2]):
 				if("192.168.10" == data[0][:10]):
-					if("reachable" == data[5]):
+					if("reachable" == data[-1]):
 						return data[0]
 					else:
 						response = os.system("ping -W 1 -c 1 " + data[0])
