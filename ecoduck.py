@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 
-import os,signal,io,array
-from subprocess import Popen, PIPE, check_output
+import os,signal,io,array,platform
+from subprocess import Popen, PIPE, check_output, call
 from math import isnan
 from time import sleep
 
 class eco:
-	debug=False
+	debug=0
+	onPi=True
+	gadget_mode="null"
 	path=""
 	## LOOKUP TABLE START ##	
 	LookUpScanCode = {
@@ -188,12 +190,12 @@ class eco:
 				# Getting rid of new line characters from input
 				line = file_line.rstrip("\r\n")
 
-				if(eco.debug):
+				if(eco.debug >=2):
 					print("Line: " + str(line_no) + ", Command: " + line + ", Length: " + str(len(line)))
 
 				# Checks for skips caused by repeat function
 				if skipdestination == -1:
-					if(eco.debug):
+					if(eco.debug >=3):
 						print("Command being interporated")
 
 					# Splitting line into command and command argument
@@ -208,7 +210,7 @@ class eco:
 						timeToWait = float(current_arg)
 						# Check for invalid delay length
 						if(isnan(timeToWait)):
-							if(eco.debug):
+							if(eco.debug >=1):
 								print("User passed attempted to use invalid delay length")
 								print("Argument: " + current_arg)
 							raise ValueError('User Error - Invalid Delay Length')
@@ -217,24 +219,24 @@ class eco:
 						repetitions = int(current_arg)
 						# Check for invalid repeat length
 						if(isnan(timeToWait)):
-							if(eco.debug):
+							if(eco.debug >=1):
 								print("User passed attempted to use invalid repeat length ")
 								print("Argument: " + current_arg)
 							raise ValueError('User Error - Invalid Repeat Length')
 						repeat_depth=1
 						repeat_length=-1
 
-						if(eco.debug):
+						if(eco.debug >=3):
 							print("Repeat open on line: " + str(line_no))
 
 						# Looking for outer repeat end
 						for cur_length, line_check in enumerate(eds_lines[line_no+1:]):
 							if "REPEAT" in line_check:
-								if(eco.debug):
+								if(eco.debug>=3):
 									print("Repeat open on line: " + str(cur_length+line_no+1))
 								repeat_depth +=1
 							if "END" in line_check:
-								if(eco.debug):
+								if(eco.debug>=3):
 									print("Repeat close on line: " + str(cur_length+line_no+1))
 								repeat_depth -=1
 								repeat_end=repeat_length
@@ -244,35 +246,35 @@ class eco:
 
 						# Error checking number of repeats
 						if (counts != 0):
-							if(eco.debug):
+							if(eco.debug>=1):
 								print("User did not close repeat correctly")
 								print("Repeat location: " + str(line_no))
 							raise ValueError('User Error - Unclosed Repeat')
 
 						repeat_end=line_no+1+repeat_end
-						if(eco.debug):
+						if(eco.debug>=2):
 							print("Repeat Code Start: " + str(line_no+1))
 							print("Repeat Code End: " + str(repeat_end-1))
 
 						eco.basic.repeat(reps, lines[line_no+1:repeat_end-1])
 						skipdestination=repeat_end
 
-						if(eco.debug): 
+						if(eco.debug>=2): 
 							print("Skipping to: " + str(skipdestination))
 					elif current_command == "CMT": 
-						if(eco.debug):
+						if(eco.debug>=1):
 							print("User Comment: " + current_arg)
 					else:
-						if(eco.debug):
+						if(eco.debug>=1):
 							print("User did not give valid command")
 							print("Command: " + current_command)
-						raise ValueError('User Error - Invalid command')
+						raise Execption('User Error - Invalid command')
 				else:
-					if(eco.debug):
+					if(eco.debug>=3):
 						print("Skipping Command: " + str(line_no))
 
 					if line_no == skipdestination:
-						if(eco.debug):
+						if(eco.debug>=3):
 							print("Skipping stopped")
 						skipdestination=-1
 
@@ -294,9 +296,6 @@ class eco:
 			arg = line[line.find(" ")+1:];
 			return arg
 	## END BASIC ##
-	def change_hid():
-		eco.path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
-
 	# Press function
 	def press (commandString):
 		if commandString.find("++") != -1:
@@ -317,7 +316,7 @@ class eco:
 			]
 			KeyList = []
 			for command in commandlist:
-				if(eco.debug):
+				if(eco.debug >=2):
 					print("Key found in press function: " + command)
 
 				if command == "lctrl":
@@ -339,8 +338,8 @@ class eco:
 				else:
 					KeyList.append(command)
 
-			eco.sendHIDpacket(eco.createHIDpacket(KeyList,ModifierList), eco.path)
-			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', eco.path)
+			eco.sendHIDpacket(eco.createHIDpacket(KeyList,ModifierList))
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 	
 	def type(textString):	
 		for key in textString:
@@ -353,8 +352,8 @@ class eco:
 				["RSHIFT", False],
 				["RALT", False],
 				["RGUI", False],
-			]),eco.path)
-			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', eco.path)
+			]))
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 			sleep(0.01)
 
 	#Pass a vector into the function for scancodes
@@ -373,14 +372,14 @@ class eco:
 
 		ModifierStr = ""
 		for modifier, state in ModifierList:
-			if(eco.debug):
+			if(eco.debug>=3):
 				print(modifier + ":"+str(state))
 			if(state):
 				ModifierStr += "1"
 			else:
 				ModifierStr += "0"
 			
-		if(eco.debug):
+		if(eco.debug>=2):
 			print(ModifierStr)
 
 		# Converts the first byte into int
@@ -400,50 +399,124 @@ class eco:
 		for HexValue in ScanCodes:
 			HIDpacket = HIDpacket + HexValue.encode()
 			packet_length += 1
-			
-		
-	
+
 		# Fill reset of packet with null bytes
 		while packet_length != 8:
 			HIDpacket = HIDpacket + NullByte
 			packet_length = packet_length + 1
-		if(eco.debug):
+		if(eco.debug>=3):
 			print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		return HIDpacket;
 
 	#Function to send code to The overlord
-	def sendHIDpacket(HIDpacket, path):
+	def sendHIDpacket(HIDpacket):
 		# Writes packet to given path
-		fd = os.open(path, os.O_RDWR)
-		os.write(fd, HIDpacket)
-		os.close(fd)
+		if(eco.onPi):
+			fd = os.open(eco.path, os.O_RDWR)
+			os.write(fd, HIDpacket)
+			os.close(fd)
+		else:
+			print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 
-	# Loops till connection tests fails
-	def wait_for_disconnect():
-		print("Waiting for device removal")
-		while(eco.test_connection("/dev/hidg0",2)):
-			sleep(3)
-		print("Disconnected!")
+	def set_gadget_mode(gadget_mode):
+		if(eco.onPi):
+			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-win/UDC 2>/dev/null")
+			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC 2>/dev/null")
+			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
+			if(gadget_mode == "simple"):
+				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
+			elif(gadget_mode == "windows"):
+				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
+			elif(gadget_mode == "macos"):
+				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
+			elif(gadget_mode == "linux"):
+				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
+			else:
+				raise Execption("Invalid gadget mode selected")
+			sleep(2)
+		eco.gadget_mode=gadget_mode
+		eco.update_hid_path()
+
+	def get_gadget_mode():
+		return eco.gadget_mode
+
+
+	def update_hid_path():
+		if(eco.onPi):
+			eco.path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
 
 
 	def timeout_handler():
-		# Helper function for electrical_test
+		# Helper function for connection functions
 		raise Execption("Timeout")
 
-	def test_connection(path, timeout):
+	# Loops till connection tests fails
+	def wait_for_keyboard_state(state, timeout=0):
+		if(not timeout >= 0):
+			raise Execption("Invaid HID timeout")
+		if(timeout > 0):
+			signal.signal(signal.SIGALRM, eco.timeout_handler)
+			signal.alarm(timeout)
+		try:
+			while(eco.is_hid_connected(2) != state):
+				sleep(3)
+		except:
+			# Time out has occured
+			return False
+		if(timeout > 0):
+			signal.alarm(0)
+		return True
+
+	def wait_for_network_state(state, timeout=0):
+		if(not timeout >= 0):
+			raise Execption("Invaid Network timeout")
+		if(timeout > 0):
+			signal.signal(signal.SIGALRM, eco.timeout_handler)
+			signal.alarm(timeout)
+		if(eco.gadget_mode == "simple"):
+			raise Execption("Networking attempted on simple gadget mode")
+		try:
+			while(eco.is_network_connected() != state):
+				sleep(3)
+		except:
+			# Time out has occured
+			return False
+		if(timeout > 0):
+			signal.alarm(0)
+		return True
+
+
+	def is_network_connected():
+		if(not eco.onPi):
+			return True
+		if(eco.gadget_mode == "simple"):
+			raise Execption("Networking attempted on simple gadget mode")
+		if(not eco.is_hid_connected()):
+			return False
+		ip=eco.get_ip()
+		response = os.system("ping -W 1 -c 1 " + ip)
+		if(response == 0):
+			return True
+		return False
+
+	def is_hid_connected(timeout=2):
 		# Checks for a led HID packet from the host - proves target is connected, then resets capslock if it is on
+		if(not timeout > 0):
+			raise Execption("Invaid HID timeout")
+		if(not eco.onPi):
+			return True
 		signal.signal(signal.SIGALRM, eco.timeout_handler)
 		signal.alarm(timeout)
 		try:
-			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', path)
-			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', path)
-			fd = os.open(path, os.O_RDWR)
+			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00')
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+			fd = os.open(eco.path, os.O_RDWR)
 			state=os.read(fd,4)
 			os.close(fd)
 			if(state == b'\x02'):
-				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', path)
-				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', path)
-				fd = os.open(path, os.O_RDWR)
+				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00')
+				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
+				fd = os.open(eco.path, os.O_RDWR)
 				state=os.read(fd,4)
 				os.close(fd)
 		except:
@@ -451,14 +524,27 @@ class eco:
 		signal.alarm(0)
 		return True
 
-	def get_target_ip():
+	def get_ip():
+		if(not eco.onPi):
+			return "192.168.10.101"
+		if(eco.gadget_mode == "simple"):
+			raise Execption("Networking not available on simple gadget")
+		if(not eco.is_hid_connected()):
+			return "n/a"
 		fd = io.open("/var/lib/misc/dnsmasq.leases", "r")
 		firstline = fd.readline()
 		columns=firstline.split(" ")
-		print("Found target IP: " + columns[2])
+		if(debug):
+			print("Found target IP: " + columns[2])
+		# Check IP is valid
+		# Check it is not host
 		return columns[2]
 
-	def get_target_os():
+	def get_os():
+		if(not eco.onPi):
+			return "n/a"
+		if(not eco.is_hid_connected()):
+			return "n/a"
 		usbrequests=check_output("dmesg | tac | sed '/^.*new device is high-speed/q' | tac | grep \"USB DWC2 REQ 80 06 03\"",shell=True).decode()[:-1]
 		lines=usbrequests.split("\n")
 		fingerprints=[]
@@ -473,13 +559,42 @@ class eco:
 				counter += 1
 			total +=1
 		if(total == 0 ):
-			return "Unknown"
+			raise Execption("Could not identify OS")
+			return "n/a"
 		if(counter == 0):
-			return "MacOS"
+			return "macos"
 		elif(counter == total):
-			return "Linux"
+			return "linux"
 		else:
-			return "Windows"
+			return "windows"
+		raise Execption("Could not identify OS")
+		return "n/a"
+	def setup_gadgets():
+		conf_check = Path("/sys/kernel/config/usb_gadget/ecoduck-simple")
+		if(conf_check.exists()):
+			print("Gadgets already configured")
+			return
+		script_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"gadget_configure.sh")
+		call(script_path)
 
-		return "Unknown"
 
+	def __init__():
+		# Making sure device is a raspberry
+		if(platform.system() != "Linux"):
+			eco.onPi=False
+		if(platform.machine() != "armv61"):
+			eco.onPi=False
+		if(os.geteuid() != 0):
+			raise Execption("Script not ran as root")
+		if(eco.onPi):
+			dwc2_conf = Path("/sys/kernel/config/usb_gadget")
+			if(not dwc2_conf.exists()):
+				raise Execption("Device does not appear to have been configured to run ecoduck software")
+			else:
+				eco.setup_gadgets()
+				eco.set_gadget_mode("simple")
+		else:
+			print("!!!! WARNING !!!!")
+			print("Device appears NOT to be a raspberry pi")
+			print("Running in testing mode")
+			eco.gadget_mode("simple")
