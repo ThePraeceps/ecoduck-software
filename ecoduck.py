@@ -571,8 +571,7 @@ class eco:
 		return "n/a"
 
 	def setup_gadgets():
-		conf_check = Path("/sys/kernel/config/usb_gadget/ecoduck-simple")
-		if(conf_check.exists()):
+		if(os.path.exists("/sys/kernel/config/usb_gadget/ecoduck-simple")):
 			print("Gadgets already configured")
 			return
 		script_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"gadget_configure.sh")
@@ -588,8 +587,7 @@ class eco:
 		if(os.geteuid() != 0):
 			raise Execption("Script not ran as root")
 		if(eco.onPi):
-			dwc2_conf = Path("/sys/kernel/config/usb_gadget")
-			if(not dwc2_conf.exists()):
+			if(not os.path.exists("/sys/kernel/config/usb_gadget"):
 				raise Execption("Device does not appear to have been configured to run ecoduck software")
 			else:
 				eco.setup_gadgets()
