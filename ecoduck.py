@@ -575,7 +575,7 @@ class eco:
 			print("Gadgets already configured")
 			return
 		script_path=os.path.join(os.path.dirname(os.path.abspath(__file__)),"gadget-configure.sh")
-		call(script_path)
+		call(script_path, shell=True)
 
 
 	def __init__():
