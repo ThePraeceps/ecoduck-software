@@ -599,6 +599,4 @@ class eco:
 			print("Device appears NOT to be a raspberry pi")
 			print("Running in testing mode")
 			eco.gadget_mode="simple"
-
-def __import__():
-	eco.__init__()
+eco.__init__()
