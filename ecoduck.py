@@ -239,8 +239,9 @@ class eco:
 								if(eco.debug>=3):
 									print("Repeat close on line: " + str(cur_length+line_no+1))
 								repeat_depth -=1
-								repeat_end=repeat_length
+								repeat_end=cur_length+line_no+1
 							if (repeat_depth == 0):
+								if(eco.debug>=3):
 								print("Outer repeat found")
 								break
 
@@ -251,7 +252,6 @@ class eco:
 								print("Repeat location: " + str(line_no))
 							raise ValueError('User Error - Unclosed Repeat')
 
-						repeat_end=line_no+1+repeat_end
 						if(eco.debug>=2):
 							print("Repeat Code Start: " + str(line_no+1))
 							print("Repeat Code End: " + str(repeat_end-1))
