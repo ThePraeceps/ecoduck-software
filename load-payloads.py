@@ -12,7 +12,8 @@ wait_for_disconnect=True
 default_gadget="simple"
 default_script="default"
 
-payload_dir = os.path.abspath("/usr/ecoduck/payloads/")
+payload_dir = os.path.abspath("/usr/ecoduck/")
+payloads=["win.txt", "macos.txt", "linux.txt", default_script + ".txt", "win.py", "macos.py", "linux.py", default_script + ".py"]
 
 if(os.path.exists("/boot/ecoduck.conf")):
 	# Parse options file
@@ -23,6 +24,12 @@ if(os.path.exists("/boot/ecoduck.conf")):
 	advanced=True
 
 # move payloads to payload directory
+for payload in payloads:
+	src=os.path.abspath(os.path.join("/boot/", payloads))
+	if(os.path.exists(src)):
+		dest=os.path.abspath(os.path.join(payload_dir, payload))
+		os.rename(src, dest)
+
 
 while(True)
 	if(eco.is_hid_connected(1)):
