@@ -240,12 +240,12 @@ class eco:
 									print("Repeat close on line: " + str(cur_length+line_no+1))
 								repeat_depth -=1
 								repeat_end=repeat_length
-							if (counts == 0):
+							if (repeat_depth == 0):
 								print("Outer repeat found")
 								break
 
 						# Error checking number of repeats
-						if (counts != 0):
+						if (repeat_depth != 0):
 							if(eco.debug>=1):
 								print("User did not close repeat correctly")
 								print("Repeat location: " + str(line_no))
