@@ -1,4 +1,4 @@
-import os, io, shutil
+import os, io, shutil, importlib
 from ecoduck import eco
 
 advanced=False
@@ -77,7 +77,9 @@ while(True):
 		if(os.path.exists(payload)):
 			if(advanced):
 				print("Running payload in advanced mode")
-				import payload
+				spec = importlib.util.spec_from_file_location("payload", payload)
+				foo = importlib.util.module_from_spec(spec)
+				spec.loader.exec_module(foo)
 			else:
 				print("Running payload in basic mode")
 				payload_reader = open(payload, "r", encoding="utf-8")
