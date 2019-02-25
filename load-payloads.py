@@ -36,8 +36,8 @@ print("Payloads loaded, waiting for connection")
 while(True):
 	if(eco.is_hid_connected(1)):
 		print("Gadget connected, getting OS")
-		os=eco.get_os()
-		print("Found OS: " + os)
+		detected_os=eco.get_os()
+		print("Found OS: " + detected_os)
 		if(advanced):
 			payload_ext=".py"
 		else:
@@ -63,7 +63,7 @@ while(True):
 			if(os=="n/a"):
 				eco.set_gadget_mode(default_gadget)
 			elif(os_gadget_detection):
-				eco.set_gadget_mode(os)
+				eco.set_gadget_mode(detected_os)
 		else:
 			eco.set_gadget_mode(default_gadget)
 
