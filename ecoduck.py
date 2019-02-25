@@ -415,18 +415,12 @@ class eco:
 			raise Exception("Gadget no longer exists")
 		if(not timeout > 0):
 			raise Exception("Invalid send timeout")
-		try:
-			signal.signal(signal.SIGALRM, eco.timeout_handler)
-			signal.alarm(timeout)
-			if(eco.onPi):
-				fd = os.open(eco.path, os.O_RDWR)
-				os.write(fd, HIDpacket)
-				os.close(fd)
-			else:
-				print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
-		except:
-			return False
-		signal.alarm(0)
+		if(eco.onPi):
+			fd = os.open(eco.path, os.O_RDWR)
+			os.write(fd, HIDpacket)
+			os.close(fd)
+		else:
+			print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		return True
 
 	def set_gadget_mode(gadget_mode):
