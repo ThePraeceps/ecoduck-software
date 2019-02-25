@@ -239,7 +239,7 @@ class eco:
 								if(eco.debug>=3):
 									print("Repeat close on line: " + str(cur_length+line_no+2))
 								repeat_depth -=1
-								repeat_end=cur_length+line_no
+								repeat_end=cur_length+line_no+1
 							if (repeat_depth == 0):
 								if(eco.debug>=3):
 									print("Outer repeat found")
