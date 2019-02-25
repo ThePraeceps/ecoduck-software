@@ -26,7 +26,7 @@ if(os.path.exists("/boot/ecoduck.conf")):
 print("Loading payloads from /boot/")
 # move payloads to payload directory
 for payload in payloads:
-	src=os.path.abspath(os.path.join("/boot/", payloads))
+	src=os.path.abspath(os.path.join("/boot/", payload))
 	if(os.path.exists(src)):
 		print("Moved: " + src)
 		dest=os.path.abspath(os.path.join(payload_dir, payload))
