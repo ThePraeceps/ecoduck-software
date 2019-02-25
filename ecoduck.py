@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os,signal,io,array,platform
+import os,signal,io,array,platform,inspect
 from subprocess import Popen, PIPE, check_output, call
 from math import isnan
 from time import sleep
@@ -356,7 +356,133 @@ class eco:
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00')
 			sleep(0.01)
 
-	#Pass a vector into the function for scancodes
+	def set_gadget_mode(gadget_mode):
+		if(eco.onPi):
+			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-win/UDC 2>/dev/null")
+			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC 2>/dev/null")
+			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
+			if(gadget_mode == "simple"):
+				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
+			elif(gadget_mode == "windows"):
+				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
+			elif(gadget_mode == "macos"):
+				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
+			elif(gadget_mode == "linux"):
+				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
+			else:
+				raise Exception("Invalid gadget mode selected")
+			sleep(2)
+		eco.gadget_mode=gadget_mode
+		eco.update_hid_path()
+
+	def get_gadget_mode():
+		return eco.gadget_mode
+
+
+	def update_hid_path():
+		if(eco.onPi):
+			eco.path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
+
+
+	def loop_timeout_handler(signum, stackframe):
+		# Helper function for connection functions
+		raise Exception("Loop timeout")
+
+	def test_timeout_handler(signum, stackframe):
+		# Helper function for connection functions
+		raise Exception("Test timeout")
+
+	def send_timeout_handler(signum, stackframe):
+		# Helper function for connection functions
+		raise Exception("Send timeout")
+
+	# Loops till connection tests fails
+	def wait_for_keyboard_state(state, timeout=0):
+		if(not timeout >= 0):
+			raise Exception("Invaid HID timeout")
+		if(timeout > 0):
+			signal.signal(signal.SIGALRM, eco.loop_timeout_handler)
+			signal.alarm(timeout)
+		try:
+			while(eco.is_hid_connected(2) != state):
+				sleep(3)
+		except Exception as e:
+			if "Loop timeout" in str(e):
+				return False
+			raise e
+		if(timeout > 0):
+			signal.alarm(0)
+		return True
+
+	def wait_for_network_state(state, timeout=0):
+		if(not timeout >= 0):
+			raise Exception("Invaid Network timeout")
+		if(timeout > 0):
+			signal.signal(signal.SIGALRM, eco.loop_timeout_handler)
+			signal.alarm(timeout)
+		if(eco.gadget_mode == "simple"):
+			raise Exception("Networking attempted on simple gadget mode")
+		try:
+			while(eco.is_network_connected() != state):
+				sleep(3)
+		except:
+			# Time out has occured
+			return False
+		if(timeout > 0):
+			signal.alarm(0)
+		return True
+
+
+	def is_network_connected():
+		if(not eco.onPi):
+			return True
+		if(eco.gadget_mode == "simple"):
+			raise Exception("Networking attempted on simple gadget mode")
+		if(not eco.is_hid_connected()):
+			return False
+		ip=eco.get_ip()
+		if(ip != "n/a"):
+			response = os.system("ping -W 1 -c 1 " + ip)
+			if(response == 0):
+				return True
+		return False
+
+	def is_hid_connected(timeout=2):
+		# Checks for a led HID packet from the host - proves target is connected, then resets capslock if it is on
+		if(not timeout > 0):
+			raise Exception("Invaid HID timeout")
+		if(not eco.onPi):
+			return True
+		fd=os.open(eco.path, os.O_NONBLOCK)
+		while(1):
+			try:
+				os.read(fd,4)
+			except:
+				break
+				
+
+		signal.signal(signal.SIGALRM, eco.test_timeout_handler)
+		signal.alarm(timeout)
+		try:
+			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', timeout)
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', timeout)
+			fd = os.open(eco.path, os.O_RDWR)
+			state=os.read(fd,4)
+			os.close(fd)
+			if(state == b'\x02'):
+				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', timeout)
+				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', timeout)
+				fd = os.open(eco.path, os.O_RDWR)
+				state=os.read(fd,4)
+				os.close(fd)
+		except Exception as e:
+			if "Test timeout" in str(e):
+				return False
+			raise e	
+		signal.alarm(0)
+		return True
+
+		#Pass a vector into the function for scancodes
 	def createHIDpacket(KeyList, ModifierList):
 		packet_length = 0
 		binarystring = ""
@@ -415,126 +541,19 @@ class eco:
 			raise Exception("Gadget no longer exists")
 		if(not timeout > 0):
 			raise Exception("Invalid send timeout")
-		if(eco.onPi):
-			fd = os.open(eco.path, os.O_RDWR)
-			os.write(fd, HIDpacket)
-			os.close(fd)
-		else:
-			print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
-		return True
-
-	def set_gadget_mode(gadget_mode):
-		if(eco.onPi):
-			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-win/UDC 2>/dev/null")
-			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-other/UDC 2>/dev/null")
-			os.system("echo \"\" > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC 2>/dev/null")
-			if(gadget_mode == "simple"):
-				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-simple/UDC")
-			elif(gadget_mode == "windows"):
-				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-win/UDC")
-			elif(gadget_mode == "macos"):
-				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
-			elif(gadget_mode == "linux"):
-				os.system("ls /sys/class/udc > /sys/kernel/config/usb_gadget/ecoduck-other/UDC")
-			else:
-				raise Exception("Invalid gadget mode selected")
-			sleep(2)
-		eco.gadget_mode=gadget_mode
-		eco.update_hid_path()
-
-	def get_gadget_mode():
-		return eco.gadget_mode
-
-
-	def update_hid_path():
-		if(eco.onPi):
-			eco.path=check_output("/bin/ls /dev/hidg*",shell=True).decode()[:-1]
-
-
-	def timeout_handler(signum, stackframe):
-		# Helper function for connection functions
-		raise Exception("Timeout")
-
-	# Loops till connection tests fails
-	def wait_for_keyboard_state(state, timeout=0):
-		if(not timeout >= 0):
-			raise Exception("Invaid HID timeout")
-		if(timeout > 0):
-			signal.signal(signal.SIGALRM, eco.timeout_handler)
+		try:
+			signal.signal(signal.SIGALRM, eco.send_timeout_handler)
 			signal.alarm(timeout)
-		try:
-			while(eco.is_hid_connected(2) != state):
-				sleep(3)
-		except:
-			# Time out has occured
-			return False
-		if(timeout > 0):
-			signal.alarm(0)
-		return True
-
-	def wait_for_network_state(state, timeout=0):
-		if(not timeout >= 0):
-			raise Exception("Invaid Network timeout")
-		if(timeout > 0):
-			signal.signal(signal.SIGALRM, eco.timeout_handler)
-			signal.alarm(timeout)
-		if(eco.gadget_mode == "simple"):
-			raise Exception("Networking attempted on simple gadget mode")
-		try:
-			while(eco.is_network_connected() != state):
-				sleep(3)
-		except:
-			# Time out has occured
-			return False
-		if(timeout > 0):
-			signal.alarm(0)
-		return True
-
-
-	def is_network_connected():
-		if(not eco.onPi):
-			return True
-		if(eco.gadget_mode == "simple"):
-			raise Exception("Networking attempted on simple gadget mode")
-		if(not eco.is_hid_connected()):
-			return False
-		ip=eco.get_ip()
-		if(ip != "n/a"):
-			response = os.system("ping -W 1 -c 1 " + ip)
-			if(response == 0):
-				return True
-		return False
-
-	def is_hid_connected(timeout=2):
-		# Checks for a led HID packet from the host - proves target is connected, then resets capslock if it is on
-		if(not timeout > 0):
-			raise Exception("Invaid HID timeout")
-		if(not eco.onPi):
-			return True
-		fd=os.open(eco.path, os.O_NONBLOCK)
-		while(1):
-			try:
-				os.read(fd,4)
-			except:
-				break
-				
-
-		signal.signal(signal.SIGALRM, eco.timeout_handler)
-		signal.alarm(timeout)
-		try:
-			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', timeout)
-			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', timeout)
-			fd = os.open(eco.path, os.O_RDWR)
-			state=os.read(fd,4)
-			os.close(fd)
-			if(state == b'\x02'):
-				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', timeout)
-				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', timeout)
+			if(eco.onPi):
 				fd = os.open(eco.path, os.O_RDWR)
-				state=os.read(fd,4)
+				os.write(fd, HIDpacket)
 				os.close(fd)
-		except:
-			return False
+			else:
+				print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
+		except Exception as e:
+			if "Send timeout" in str(e):
+				return False
+			raise e
 		signal.alarm(0)
 		return True
 
