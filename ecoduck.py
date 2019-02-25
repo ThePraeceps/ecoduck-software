@@ -233,16 +233,16 @@ class eco:
 						for cur_length, line_check in enumerate(eds_lines[line_no+1:]):
 							if "REPEAT" in line_check:
 								if(eco.debug>=3):
-									print("Repeat open on line: " + str(cur_length+line_no+1))
+									print("Repeat open on line: " + str(cur_length+line_no+2))
 								repeat_depth +=1
 							if "END" in line_check:
 								if(eco.debug>=3):
-									print("Repeat close on line: " + str(cur_length+line_no+1))
+									print("Repeat close on line: " + str(cur_length+line_no+2))
 								repeat_depth -=1
-								repeat_end=cur_length+line_no+1
+								repeat_end=cur_length+line_no
 							if (repeat_depth == 0):
 								if(eco.debug>=3):
-								print("Outer repeat found")
+									print("Outer repeat found")
 								break
 
 						# Error checking number of repeats
@@ -256,7 +256,7 @@ class eco:
 							print("Repeat Code Start: " + str(line_no+1))
 							print("Repeat Code End: " + str(repeat_end-1))
 
-						eco.basic.repeat(repetitions, eds_lines[line_no+1:repeat_end-1])
+						eco.basic.repeat(repetitions, eds_lines[line_no+1:repeat_end])
 						skipdestination=repeat_end
 
 						if(eco.debug>=2): 
