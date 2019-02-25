@@ -88,6 +88,7 @@ while(True):
 			break
 		if(wait_for_disconnect):
 			print("Waiting for disconnect")
+			print("Path: " + eco.path)
 			eco.wait_for_keyboard_state(False)
 			print("Disconnected!")
 		eco.set_gadget_mode("simple")
