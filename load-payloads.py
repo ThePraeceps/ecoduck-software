@@ -39,19 +39,25 @@ while(True):
 		detected_os=eco.get_os()
 		print("Found OS: " + detected_os)
 		if(advanced):
+			print("Selecting advanced payload")
 			payload_ext=".py"
 		else:
+			print("Selecting basic payload")
 			payload_ext=".txt"
 
 		if(os_payload_detection==True):
 			print("Running payload detection")
-			if(os=="windows"):
+			if(detected_os=="windows"):
+				print("Using windows payload")
 				payload = os.path.abspath(os.path.join(payload_dir, "win" + payload_ext))
-			elif(os=="macos"):
+			elif(detected_os=="macos"):
+				print("Using macos payload")
 				payload = os.path.abspath(os.path.join(payload_dir, "macos" + payload_ext))
-			elif(os=="linux"):
+			elif(detected_os=="linux"):
+				print("Using linux payload")
 				payload = os.path.abspath(os.path.join(payload_dir, "linux" + payload_ext))
 			else:
+				print("Using default payload")
 				payload = os.path.abspath(os.path.join(payload_dir, default_script + payload_ext))
 
 		if(not os.path.exists(payload)):
