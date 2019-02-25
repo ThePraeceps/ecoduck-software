@@ -23,17 +23,21 @@ if(os.path.exists("/boot/ecoduck.conf")):
 		# OS detection
 	advanced=True
 
+print("Loading payloads from /boot/")
 # move payloads to payload directory
 for payload in payloads:
 	src=os.path.abspath(os.path.join("/boot/", payloads))
 	if(os.path.exists(src)):
+		print("Moved: " + src)
 		dest=os.path.abspath(os.path.join(payload_dir, payload))
 		os.rename(src, dest)
 
-
-while(True)
+print("Payloads loaded, waiting for connection")
+while(True):
 	if(eco.is_hid_connected(1)):
+		print("Gadget connected, getting OS")
 		os=eco.get_os()
+		print("Found OS: " + os)
 		if(advanced):
 			payload_ext=".py"
 		else:
@@ -41,6 +45,7 @@ while(True)
 
 		payload=""
 		if(os_payload_detection==True):
+			print("Running payload detection")
 			if(os=="windows"):
 				payload = os.path.abspath(os.path.join(payload_dir, "win" + payload_ext))
 			elif(os=="macos"):
@@ -51,25 +56,35 @@ while(True)
 				payload = os.path.abspath(os.path.join(payload_dir, default_script + payload_ext))
 
 		if(not os.path.exists(payload)):
+			print("Using default payload")
 			payload = os.path.abspath(os.path.join(payload_dir, default_script + payload_ext))
 		if
+		print("Payload selected: " + payload)
 		if(os_gadget_detection):
+			print("Running gadget detection")
 			if(os=="n/a"):
 				eco.set_gadget_mode(default_gadget)
 			elif(os_gadget_detection):
 				eco.set_gadget_mode(os)
 		else:
 			eco.set_gadget_mode(default_gadget)
+
+		print("Using gadget: " + eco.set_gadget_mode)
 		if(os.path.exists(payload)):
 			if(advanced):
+				print("Running payload in advanced mode")
 				import payload
 			else:
+				print("Running payload in basic mode")
 				payload_reader = open("myfile.txt", "r", encoding="utf-8")
 				eco.basic.interprator(payload_reader.readlines())
 				payload_reader.close()
 		if(infinite==False):
+			print("Infinite payload running disabled, stopping")
 			break
 		if(wait_for_disconnect):
+			print("Waiting for disconnect")
 			eco.wait_for_keyboard_state(False)
+			print("Disconnected!")
 		eco.set_gadget_mode("simple")
 
