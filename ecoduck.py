@@ -460,9 +460,8 @@ class eco:
 			except:
 				break
 				
-		if(timeout>0):
-			signal.signal(signal.SIGALRM, eco.test_timeout_handler)
-			signal.alarm(timeout)
+		signal.signal(signal.SIGALRM, eco.test_timeout_handler)
+		signal.alarm(timeout)
 		try:
 			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
@@ -479,8 +478,7 @@ class eco:
 			if "Test timeout" in str(e):
 				return False
 			raise e
-		if(timeout>0):
-			signal.alarm(0)
+		signal.alarm(0)
 		return True
 
 		#Pass a vector into the function for scancodes
@@ -540,11 +538,12 @@ class eco:
 		# Writes packet to given path
 		if(not os.path.exists(eco.path)):
 			raise Exception("Gadget no longer exists")
-		if(not timeout > 0):
+		if(not timeout >= 0):
 			raise Exception("Invalid send timeout")
 		try:
-			signal.signal(signal.SIGALRM, eco.send_timeout_handler)
-			signal.alarm(timeout)
+			if(timeout > 0):
+				signal.signal(signal.SIGALRM, eco.send_timeout_handler)
+				signal.alarm(timeout)
 			if(eco.onPi):
 				fd = os.open(eco.path, os.O_RDWR)
 				os.write(fd, HIDpacket)
@@ -555,7 +554,8 @@ class eco:
 			if "Send timeout" in str(e):
 				return False
 			raise e
-		signal.alarm(0)
+		if(timeout > 0):
+			signal.alarm(0)
 		return True
 
 	def get_ip():
