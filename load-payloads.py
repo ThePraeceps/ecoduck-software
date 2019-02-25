@@ -43,7 +43,7 @@ while(True):
 		else:
 			payload_ext=".txt"
 
-		payload=""
+		payload=os.path.abspath("/")
 		if(os_payload_detection==True):
 			print("Running payload detection")
 			if(os=="windows"):
