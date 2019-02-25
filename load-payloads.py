@@ -67,7 +67,7 @@ while(True):
 		else:
 			eco.set_gadget_mode(default_gadget)
 
-		print("Using gadget: " + eco.set_gadget_mode)
+		print("Using gadget: " + eco.get_gadget_mode())
 		if(os.path.exists(payload)):
 			if(advanced):
 				print("Running payload in advanced mode")
