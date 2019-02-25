@@ -449,7 +449,7 @@ class eco:
 
 	def is_hid_connected(timeout=2):
 		# Checks for a led HID packet from the host - proves target is connected, then resets capslock if it is on
-		if(not timeout > 0):
+		if(not timeout >= 0):
 			raise Exception("Invaid HID timeout")
 		if(not eco.onPi):
 			return True
@@ -460,26 +460,27 @@ class eco:
 			except:
 				break
 				
-
-		signal.signal(signal.SIGALRM, eco.test_timeout_handler)
-		signal.alarm(timeout)
+		if(timeout>0):
+			signal.signal(signal.SIGALRM, eco.test_timeout_handler)
+			signal.alarm(timeout)
 		try:
-			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', timeout)
-			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', timeout)
+			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
+			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
 			fd = os.open(eco.path, os.O_RDWR)
 			state=os.read(fd,4)
 			os.close(fd)
 			if(state == b'\x02'):
-				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', timeout)
-				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', timeout)
+				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
+				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
 				fd = os.open(eco.path, os.O_RDWR)
 				state=os.read(fd,4)
 				os.close(fd)
 		except Exception as e:
 			if "Test timeout" in str(e):
 				return False
-			raise e	
-		signal.alarm(0)
+			raise e
+		if(timeout>0):
+			signal.alarm(0)
 		return True
 
 		#Pass a vector into the function for scancodes
