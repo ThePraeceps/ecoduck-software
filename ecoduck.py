@@ -256,7 +256,7 @@ class eco:
 							print("Repeat Code Start: " + str(line_no+1))
 							print("Repeat Code End: " + str(repeat_end-1))
 
-						eco.basic.repeat(repetitions, lines[line_no+1:repeat_end-1])
+						eco.basic.repeat(repetitions, eds_lines[line_no+1:repeat_end-1])
 						skipdestination=repeat_end
 
 						if(eco.debug>=2): 
