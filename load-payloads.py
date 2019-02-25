@@ -80,7 +80,7 @@ while(True):
 				import payload
 			else:
 				print("Running payload in basic mode")
-				payload_reader = open("myfile.txt", "r", encoding="utf-8")
+				payload_reader = open(payload, "r", encoding="utf-8")
 				eco.basic.interprator(payload_reader.readlines())
 				payload_reader.close()
 		if(infinite==False):
