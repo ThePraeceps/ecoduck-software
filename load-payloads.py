@@ -1,4 +1,4 @@
-import os, io
+import os, io, shutil
 from ecoduck import eco
 
 advanced=False
@@ -30,7 +30,7 @@ for payload in payloads:
 	if(os.path.exists(src)):
 		print("Moved: " + src)
 		dest=os.path.abspath(os.path.join(payload_dir, payload))
-		os.rename(src, dest)
+		shutil.move(src, dest)
 
 print("Payloads loaded, waiting for connection")
 while(True):
