@@ -58,7 +58,6 @@ while(True):
 		if(not os.path.exists(payload)):
 			print("Using default payload")
 			payload = os.path.abspath(os.path.join(payload_dir, default_script + payload_ext))
-		if
 		print("Payload selected: " + payload)
 		if(os_gadget_detection):
 			print("Running gadget detection")
