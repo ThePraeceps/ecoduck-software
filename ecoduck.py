@@ -183,7 +183,7 @@ class eco:
 	## LOOKUP TABLES FINISHED ##
 	## START BASIC ##
 	class basic:
-		def interprator(eds_lines):
+		def interpretor(eds_lines):
 			# Line number to skip to after repeat has finished
 			skipdestination=-1
 			for line_no, file_line in enumerate(eds_lines):
@@ -533,7 +533,7 @@ class eco:
 			print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		return HIDpacket;
 
-	#Function to send code to The overlord
+	#Function to send code to the hardware
 	def sendHIDpacket(HIDpacket, timeout=4):
 		# Writes packet to given path
 		if(not os.path.exists(eco.path)):
