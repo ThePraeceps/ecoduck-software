@@ -28,25 +28,25 @@ if(os.path.exists(conf_file)):
 	conf_lines=conf_reader.readlines()
 	conf_reader.close()
 	for line in conf_lines:
-		if "advanced" in line:
+		if "advanced" in line[:8]:
 			advanced=get_state(line)
 			print("Set advanced to: " + str(advanced))
-		elif "infinite" in line:
+		elif "infinite" in line[:8]:
 			infinite=get_state(line)
 			print("Set infinite to: " + str(infinite))
-		elif "os_payload_detection" in line:
+		elif "os_payload_detection" in line[:20]
 			os_payload_detection=get_state(line)
 			print("Set os_payload_detection to: " + str(os_payload_detection))
-		elif "os_gadget_detection" in line:
+		elif "os_gadget_detection" in line[:19]:
 			os_gadget_detection=get_state(line)
 			print("Set os_gadget_detection to: " + str(os_gadget_detection))
-		elif "wait_for_disconnect" in line:
+		elif "wait_for_disconnect" in line[:19]:
 			wait_for_disconnect=get_state(line)
 			print("Set wait_for_disconnect to: " + str(wait_for_disconnect))
-		elif "default_gadget" in line:
+		elif "default_gadget" in line[:14]:
 			default_gadget=line.split("=")[1]
 			print("Set default_gadget to: " + str(default_gadget))
-		elif "default_script" in line:
+		elif "default_script" in line[:14]:
 			default_script=line.split("=")[1]
 			print("Set default_script to: " + str(default_script))
 
