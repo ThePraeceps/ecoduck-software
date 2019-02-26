@@ -1,4 +1,4 @@
-import os, io, shutil, importlib
+import os, io, shutil, importlib.util
 from ecoduck import eco
 
 advanced=False
