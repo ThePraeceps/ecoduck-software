@@ -28,6 +28,7 @@ if(os.path.exists(conf_file)):
 	conf_lines=conf_reader.readlines()
 	conf_reader.close()
 	for line in conf_lines:
+		line=line.rstrip("\r\n")
 		if "advanced" in line[:8]:
 			advanced=get_state(line)
 			print("Set advanced to: " + str(advanced))
@@ -71,7 +72,7 @@ while(True):
 		else:
 			print("Selecting basic payload")
 			payload_ext=".txt"
-
+		payload=""
 		if(os_payload_detection==True):
 			print("Running payload detection")
 			if(detected_os=="windows"):
