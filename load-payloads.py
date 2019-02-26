@@ -30,18 +30,25 @@ if(os.path.exists(conf_file)):
 	for line in conf_lines:
 		if "advanced" in line:
 			advanced=get_state(line)
+			print("Set advanced to: " + str(advanced))
 		elif "infinite" in line:
 			infinite=get_state(line)
+			print("Set infinite to: " + str(infinite))
 		elif "os_payload_detection" in line:
 			os_payload_detection=get_state(line)
+			print("Set os_payload_detection to: " + str(os_payload_detection))
 		elif "os_gadget_detection" in line:
 			os_gadget_detection=get_state(line)
+			print("Set os_gadget_detection to: " + str(os_gadget_detection))
 		elif "wait_for_disconnect" in line:
 			wait_for_disconnect=get_state(line)
+			print("Set wait_for_disconnect to: " + str(wait_for_disconnect))
 		elif "default_gadget" in line:
 			default_gadget=line.split("=")[1]
+			print("Set default_gadget to: " + str(default_gadget))
 		elif "default_script" in line:
 			default_script=line.split("=")[1]
+			print("Set default_script to: " + str(default_script))
 
 print("Loading payloads from /boot/")
 # move payloads to payload directory

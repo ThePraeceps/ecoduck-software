@@ -217,7 +217,7 @@ class eco:
                 "End":"\x77",
                 "F2":"\x78",
                 "page_down":"\x79",
-                "f1":"\x7Av,
+                "f1":"\x7A",
                 "left_arrow":"\x7B",
                 "right_arrow":"\x7C",
                 "down_arrow":"\x7D",
