@@ -25,7 +25,7 @@ def get_state(line):
 
 if(os.path.exists(conf_file)):
 	conf_reader = open(conf_file, "r", encoding="utf-8")
-	conf_lines=payload_reader.readlines()
+	conf_lines=conf_reader.readlines()
 	conf_reader.close()
 	for line in conf_lines:
 		if "advanced" in line:
