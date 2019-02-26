@@ -15,13 +15,33 @@ default_script="default"
 payload_dir = os.path.abspath("/usr/ecoduck/")
 payloads=["win.txt", "macos.txt", "linux.txt", default_script + ".txt", "win.py", "macos.py", "linux.py", default_script + ".py"]
 
-if(os.path.exists("/boot/ecoduck.conf")):
-	# Parse options file
-	# Advanced Mode
-		# Infinite Loop
-		# Default payload
-		# OS detection
-	advanced=True
+conf_file=os.path.abspath("/boot/ecoduck.conf")
+
+def get_state(line):
+	state=line.split("=")[1]
+	if "true" in state.lower():
+		return True
+	return False
+
+if(os.path.exists(conf_file)):
+	conf_reader = open(conf_file, "r", encoding="utf-8")
+	conf_lines=payload_reader.readlines()
+	conf_reader.close()
+	for line in conf_lines:
+		if "advanced" in line:
+			advanced=get_state(line)
+		elif "infinite" in line:
+			infinite=get_state(line)
+		elif "os_payload_detection" in line:
+			os_payload_detection=get_state(line)
+		elif "os_gadget_detection" in line:
+			os_gadget_detection=get_state(line)
+		elif "wait_for_disconnect" in line:
+			wait_for_disconnect=get_state(line)
+		elif "default_gadget" in line:
+			default_gadget=line.split("=")[1]
+		elif "default_script" in line:
+			default_script=line.split("=")[1]
 
 print("Loading payloads from /boot/")
 # move payloads to payload directory
