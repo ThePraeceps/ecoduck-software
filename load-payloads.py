@@ -34,7 +34,7 @@ if(os.path.exists(conf_file)):
 		elif "infinite" in line[:8]:
 			infinite=get_state(line)
 			print("Set infinite to: " + str(infinite))
-		elif "os_payload_detection" in line[:20]
+		elif "os_payload_detection" in line[:20]:
 			os_payload_detection=get_state(line)
 			print("Set os_payload_detection to: " + str(os_payload_detection))
 		elif "os_gadget_detection" in line[:19]:
