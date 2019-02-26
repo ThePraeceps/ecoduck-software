@@ -83,7 +83,7 @@ while(True):
 			else:
 				print("Running payload in basic mode")
 				payload_reader = open(payload, "r", encoding="utf-8")
-				eco.basic.interprator(payload_reader.readlines())
+				eco.basic.interpreter(payload_reader.readlines())
 				payload_reader.close()
 		if(infinite==False):
 			print("Infinite payload running disabled, stopping")
