@@ -183,7 +183,7 @@ class eco:
 	## LOOKUP TABLES FINISHED ##
 	## START BASIC ##
 	class basic:
-		def interpretor(eds_lines):
+		def interpreter(eds_lines):
 			# Line number to skip to after repeat has finished
 			skipdestination=-1
 			for line_no, file_line in enumerate(eds_lines):
