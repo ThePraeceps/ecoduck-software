@@ -325,7 +325,7 @@ class eco:
 		# Repeat Function
 		def repeat(reps, eds_lines):
 			for i in range(int(reps)):
-				eco.basic.interprator(eds_lines)
+				eco.basic.interpreter(eds_lines)
 		# Delay Function
 		def delay(seconds):
 			sleep(seconds)
