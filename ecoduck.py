@@ -223,32 +223,6 @@ class eco:
                 "down_arrow":"\x7D",
                 "up_arrow":"\x7E"
 		
-		"a":"\x00",
-		"b":"\x",
-		"c":"\x",
-		"d":"\x",
-		"e":"\x",
-		"f":"\x",
-		"g":"\x",
-		"h":"\x",
-		"i":"\x",
-		"j":"\x",
-		"k":"\x",
-		"l":"\x",
-		"m":"\x",
-		"n":"\x",
-		"o":"\x",
-		"p":"\x",
-		"q":"\x",
-		"r":"\x",
-		"s":"\x01",
-		"t":"\x",
-		"u":"\x",
-		"v":"\x",
-		"w":"\x",
-		"x":"\x",
-		"y":"\x",
-		"z":"\x",
 		
         }
 	
@@ -274,7 +248,7 @@ class eco:
 
 					# Splitting line into command and command argument
 					current_command=eco.basic.getCommand(line)
-					current_arg=eco.basic.getArg(line)
+					current_arg=eco.Fubasic.getArg(line)
 
 					if current_command == "TYPE":
 						eco.type(current_arg)
