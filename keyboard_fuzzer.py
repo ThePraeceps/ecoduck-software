@@ -48,13 +48,16 @@ for i in range(10):
 print("Scancode lookup table")
 print("")
 for i in range(256):
-	print("\"" + scancodes[i] + "\":\"\\x" + str("0x%02X" % i)[-2:] + "\",")
+	if(scancodes[i] != ""):
+		print("\"" + scancodes[i] + "\":\"\\x" + str("0x%02X" % i)[-2:] + "\",")
 print("Shiftcode lookup table")
 print("")
 for i in range(256):
-	print("\""+shiftcodes[i]+"\":\""+scancodes[i]+"\",")
+	if(shiftcodes[i] != ""):
+		print("\""+shiftcodes[i]+"\":\""+scancodes[i]+"\",")
 print("")
 print("Altcode lookup table")
 for i in range(256):
-	print("\""+altcodes[i]+"\":\""+scancodes[i]+"\",")
+	if(altcodes[i] != ""):
+		print("\""+altcodes[i]+"\":\""+scancodes[i]+"\",")
 print("")
