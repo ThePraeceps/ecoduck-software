@@ -9,8 +9,10 @@ for i in range(256):
 		mods=b'\x00'
 		bytes_keycode=bytes([i])
 		null=bytes(5)
-		eco.sendHIDpacket(mods+bytes_keycode+null)
+		packet=mods+bytes(1)+bytes_keycode+null
+		eco.sendHIDpacket(packet)
 		eco.sendHIDpacket(bytes(8))
+		print(":".join("{:02x}".format(ord(c)) for c in packet.decode()))
 		result=input(hex_keycode + " : ")
 		scancodes[i]=result
 
@@ -20,8 +22,10 @@ for i in range(256):
 		mods=b'\x02'
 		bytes_keycode=bytes([i])
 		null=bytes(5)
-		eco.sendHIDpacket(mods+bytes_keycode+null)
+		packet=mods+bytes(1)+bytes_keycode+null
+		eco.sendHIDpacket(packet)
 		eco.sendHIDpacket(bytes(8))
+		print(":".join("{:02x}".format(ord(c)) for c in packet.decode()))
 		result=input(hex_keycode + " : " + scancodes[i] + " : ")
 		shiftcodes[i]=result
 
@@ -31,8 +35,10 @@ for i in range(256):
 		mods=b'\x04'
 		bytes_keycode=bytes([i])
 		null=bytes(5)
-		eco.sendHIDpacket(mods+bytes_keycode+null)
+		packet=mods+bytes(1)+bytes_keycode+null
+		eco.sendHIDpacket(packet)
 		eco.sendHIDpacket(bytes(8))
+		print(":".join("{:02x}".format(ord(c)) for c in packet.decode()))
 		result=input(hex_keycode + " : " + scancodes[i] + " : ")
 		altcodes[i]=result
 
