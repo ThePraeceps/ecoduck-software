@@ -181,7 +181,7 @@ class eco:
 		")":"0"
 	}
 	
-	LookUpTableMac = {
+	LookUpScanCodeMac = {
                 "enter":"\x24",
                 "tab":"\x30",
                 "space":"\x31",
@@ -222,7 +222,37 @@ class eco:
                 "right_arrow":"\x7C",
                 "down_arrow":"\x7D",
                 "up_arrow":"\x7E"
+		
+		"a":"\x00",
+		"b":"\x",
+		"c":"\x",
+		"d":"\x",
+		"e":"\x",
+		"f":"\x",
+		"g":"\x",
+		"h":"\x",
+		"i":"\x",
+		"j":"\x",
+		"k":"\x",
+		"l":"\x",
+		"m":"\x",
+		"n":"\x",
+		"o":"\x",
+		"p":"\x",
+		"q":"\x",
+		"r":"\x",
+		"s":"\x01",
+		"t":"\x",
+		"u":"\x",
+		"v":"\x",
+		"w":"\x",
+		"x":"\x",
+		"y":"\x",
+		"z":"\x",
+		
         }
+	
+	
 
 	## LOOKUP TABLES FINISHED ##
 	## START BASIC ##
