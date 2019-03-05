@@ -9,27 +9,30 @@ for i in range(256):
 		mods=b'\x00'
 		bytes_keycode=bytes([i])
 		null=bytes(5)
-		eco.sendHIDPacket(mods+bytes_keycode+null)
+		eco.sendHIDpacket(mods+bytes_keycode+null)
+		eco.sendHIDpacket(bytes(8))
 		result=input(hex_keycode + " : ")
 		scancodes[i]=result
 
 print("Shift scancodes")
 for i in range(256):
 		hex_keycode=str("0x%02X" % i)[-2:]
-		mods=b'\x00'
+		mods=b'\x02'
 		bytes_keycode=bytes([i])
 		null=bytes(5)
-		eco.sendHIDPacket(mods+bytes_keycode+null)
+		eco.sendHIDpacket(mods+bytes_keycode+null)
+		eco.sendHIDpacket(bytes(8))
 		result=input(hex_keycode + " : " + scancodes[i] + " : ")
 		shiftcodes[i]=result
 
 print("Alt scancodes")
 for i in range(256):
 		hex_keycode=str("0x%02X" % i)[-2:]
-		mods=b'\x00'
+		mods=b'\x04'
 		bytes_keycode=bytes([i])
 		null=bytes(5)
-		eco.sendHIDPacket(mods+bytes_keycode+null)
+		eco.sendHIDpacket(mods+bytes_keycode+null)
+		eco.sendHIDpacket(bytes(8))
 		result=input(hex_keycode + " : " + scancodes[i] + " : ")
 		altcodes[i]=result
 

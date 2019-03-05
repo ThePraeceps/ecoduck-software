@@ -584,8 +584,9 @@ class eco:
 	#Function to send code to the hardware
 	def sendHIDpacket(HIDpacket, timeout=4):
 		# Writes packet to given path
-		if(not os.path.exists(eco.path)):
-			raise Exception("Gadget no longer exists")
+		if(eco.onPi):
+			if(not os.path.exists(eco.path)):
+				raise Exception("Gadget no longer exists")
 		if(not timeout >= 0):
 			raise Exception("Invalid send timeout")
 		try:
