@@ -671,9 +671,9 @@ class eco:
 			eco.onPi=False
 		if(platform.machine() != 'armv6l'):
 			eco.onPi=False
-		if(os.geteuid() != 0):
-			raise Exception("Script not ran as root")
 		if(eco.onPi):
+			if(os.geteuid() != 0):
+				raise Exception("Script not ran as root")
 			if(not os.path.exists("/sys/kernel/config/usb_gadget")):
 				raise Exception("Device does not appear to have been configured to run ecoduck software")
 			else:
