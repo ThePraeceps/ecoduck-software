@@ -180,53 +180,6 @@ class eco:
 		"(":"9",
 		")":"0"
 	}
-	
-	LookUpScanCodeMac = {
-                "enter":"\x24",
-                "tab":"\x30",
-                "space":"\x31",
-                "backspace":"\x33",
-                "escape":"\x35",
-                "caps_lock":"\x39",
-                "function":"\x3F",
-                "f17":"\x40",
-                "VolumeUp":"\x48",
-                "VolumeDown":"\x49",
-                "Mute":"\x4A",
-                "f18":"\x4F",
-                "f19":"\x50",
-                "f20":"\x5A",
-                "f5":"\x60",
-                "f6":"\x61",
-                "f7":"\x62",
-                "f3":"\x63",
-                "f8":"\x64",
-                "f9":"\x65",
-                "f11":"\x67",
-                "f13":"\x69",
-                "f16":"\x6A",
-                "f14":"\x6B",
-                "f10":"\x6D",
-                "f12":"\x6F",
-                "f15":"\x71",
-                "Help":"\x72",
-                "Home":"\x73",
-                "page_up":"\x74",
-                "delete":"\x75",
-                "F4":"\x76",
-                "End":"\x77",
-                "F2":"\x78",
-                "page_down":"\x79",
-                "f1":"\x7A",
-                "left_arrow":"\x7B",
-                "right_arrow":"\x7C",
-                "down_arrow":"\x7D",
-                "up_arrow":"\x7E"
-		
-		
-        }
-	
-	
 
 	## LOOKUP TABLES FINISHED ##
 	## START BASIC ##
