@@ -201,7 +201,7 @@ class eco:
 
 					# Splitting line into command and command argument
 					current_command=eco.basic.getCommand(line)
-					current_arg=eco.Fubasic.getArg(line)
+					current_arg=eco.basic.getArg(line)
 
 					if current_command == "TYPE":
 						eco.type(current_arg)
