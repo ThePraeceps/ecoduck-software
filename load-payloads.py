@@ -30,8 +30,10 @@ if(os.path.exists(conf_file)):
 	for line in conf_lines:
 		line=line.rstrip("\r\n")
 		if "#" not in line[:1] or not(len(line) == 0) :
-			if "disable" in line[:7]:
-				exit()
+			if "enabled" in line[:7]:
+				enabled=get_state(line)
+				if not enabled:
+					exit()
 			if "advanced" in line[:8]:
 				advanced=get_state(line)
 				print("Set advanced to: " + str(advanced))
