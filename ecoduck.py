@@ -554,6 +554,8 @@ class eco:
 		except Exception as e:
 			if "Send timeout" in str(e):
 				return False
+			elif "BlockingIOError" in str(e):
+				return False
 			raise e
 		if(timeout > 0):
 			signal.alarm(0)
