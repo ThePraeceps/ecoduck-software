@@ -552,10 +552,9 @@ class eco:
 			else:
 				print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		except Exception as e:
-			print(str(e))
 			if "Send timeout" in str(e):
 				return False
-			elif "BlockingIOError" in str(e):
+			elif "Resource temporarily unavailable" in str(e):
 				return False
 			raise e
 		if(timeout > 0):
