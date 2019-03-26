@@ -12,7 +12,7 @@ fi
 if [ ! -d /sys/kernel/config/usb_gadget ]; then
         echo "Device does not appear to be configured for this script"
         exit 2
-
+fi
 
 if [ -d /sys/kernel/config/usb_gadget/ecoduck-simple ]; then
         echo "Gadgets already exist"
