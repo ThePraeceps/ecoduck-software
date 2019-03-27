@@ -454,30 +454,29 @@ class eco:
 			raise Exception("Invaid HID timeout")
 		if(not eco.onPi):
 			return True
-		fd=os.open(eco.path, os.O_NONBLOCK)
-		while(1):
-			try:
-				os.read(fd,4)
-			except:
-				break
-		os.close(fd)
+		with os.open(eco.path, os.O_NONBLOCK) as fd:
+			while(1):
+				try:
+					os.read(fd,4)
+				except:
+					break
+			os.close(fd)
 		signal.signal(signal.SIGALRM, eco.test_timeout_handler)
 		signal.alarm(timeout)
 		try:
 			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
-			fd = os.open(eco.path, os.O_RDWR)
-			state=os.read(fd,4)
-			os.close(fd)
+			with os.open(eco.path, os.O_RDWR) as fd:
+				state=os.read(fd,4)
+				os.close(fd)
 			if(state == b'\x02'):
 				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
-				fd = os.open(eco.path, os.O_RDWR)
-				state=os.read(fd,4)
-				os.close(fd)
+				with os.open(eco.path, os.O_RDWR) as fd:
+					state=os.read(fd,4)
+					os.close(fd)
 		except Exception as e:
 			if "Test timeout" in str(e):
-				os.close(fd)
 				return False
 			raise e
 		signal.alarm(0)
@@ -547,13 +546,12 @@ class eco:
 				signal.signal(signal.SIGALRM, eco.send_timeout_handler)
 				signal.alarm(timeout)
 			if(eco.onPi):
-				fd = os.open(eco.path, os.O_RDWR)
-				os.write(fd, HIDpacket)
-				os.close(fd)
+				with os.open(eco.path, os.O_RDWR) as fd:
+					os.write(fd, HIDpacket)
+					os.close(fd)
 			else:
 				print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		except Exception as e:
-			os.close(fd)
 			if "Send timeout" in str(e):
 				return False
 			elif "Resource temporarily unavailable" in str(e):
