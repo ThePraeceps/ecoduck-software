@@ -470,13 +470,13 @@ class eco:
 			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
 			with open(eco.path, 'rb') as fd:
-				state=fd.read(4)
+				state=fd.read(1)
 				fd.close()
 			if(state == b'\x02'):
 				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
 				with open(eco.path, 'rb') as fd:
-					state=fd.read(4)
+					state=fd.read(1)
 					fd.close()
 		except Exception as e:
 			if "Test timeout" in str(e):
