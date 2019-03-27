@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os,signal,io,array,platform,inspect
+import os,signal,io,array,platform,inspect,fcntl
 from subprocess import Popen, PIPE, check_output, call
 from math import isnan
 from time import sleep
@@ -454,7 +454,8 @@ class eco:
 			raise Exception("Invaid HID timeout")
 		if(not eco.onPi):
 			return True
-		with os.fdopen(os.open(eco.path, os.O_NONBLOCK)) as fd:
+		with open(eco.path, 'rb') as fd:
+			fcntl.fcntl(fd.fileno(), fcntl.F_SETFL, flag | os.O_NONBLOCK)
 			while(1):
 				try:
 					fd.read(4)
@@ -466,13 +467,13 @@ class eco:
 		try:
 			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
-			with os.fdopen(os.open(eco.path, os.O_RDWR)) as fd:
+			with open(eco.path, 'rb') as fd:
 				state=fd.read(4)
 				fd.close()
 			if(state == b'\x02'):
 				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
-				with os.fdopen(os.open(eco.path, os.O_RDWR)) as fd:
+				with open(eco.path, 'rb') as fd:
 					state=fd.read(4)
 					fd.close()
 		except Exception as e:
@@ -546,7 +547,7 @@ class eco:
 				signal.signal(signal.SIGALRM, eco.send_timeout_handler)
 				signal.alarm(timeout)
 			if(eco.onPi):
-				with os.fdopen(os.open(eco.path, os.O_RDWR)) as fd:
+				with open(eco.path, 'wb') as fd:
 					fd.write(HIDpacket)
 					fd.close()
 			else:
