@@ -460,7 +460,6 @@ class eco:
 					os.read(fd,4)
 				except:
 					break
-			os.close(fd)
 		signal.signal(signal.SIGALRM, eco.test_timeout_handler)
 		signal.alarm(timeout)
 		try:
@@ -468,13 +467,11 @@ class eco:
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
 			with os.fdopen(os.open(eco.path, os.O_RDWR)) as fd:
 				state=os.read(fd,4)
-				os.close(fd)
 			if(state == b'\x02'):
 				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
 				with os.fdopen(os.open(eco.path, os.O_RDWR)) as fd:
 					state=os.read(fd,4)
-					os.close(fd)
 		except Exception as e:
 			if "Test timeout" in str(e):
 				return False
@@ -548,7 +545,6 @@ class eco:
 			if(eco.onPi):
 				with os.fdopen(os.open(eco.path, os.O_RDWR)) as fd:
 					os.write(fd, HIDpacket)
-					os.close(fd)
 			else:
 				print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		except Exception as e:
