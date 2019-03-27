@@ -455,6 +455,7 @@ class eco:
 		if(not eco.onPi):
 			return True
 		with open(eco.path, 'rb') as fd:
+			flag = fcntl.fcntl(fd, fcntl.F_GETFL)
 			fcntl.fcntl(fd.fileno(), fcntl.F_SETFL, flag | os.O_NONBLOCK)
 			while(1):
 				try:
