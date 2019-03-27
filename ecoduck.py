@@ -477,6 +477,7 @@ class eco:
 				os.close(fd)
 		except Exception as e:
 			if "Test timeout" in str(e):
+				os.close(fd)
 				return False
 			raise e
 		signal.alarm(0)
@@ -552,6 +553,7 @@ class eco:
 			else:
 				print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		except Exception as e:
+			os.close(fd)
 			if "Send timeout" in str(e):
 				return False
 			elif "Resource temporarily unavailable" in str(e):
