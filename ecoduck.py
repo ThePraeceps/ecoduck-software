@@ -454,7 +454,7 @@ class eco:
 			raise Exception("Invaid HID timeout")
 		if(not eco.onPi):
 			return True
-		with os.open(eco.path, os.O_NONBLOCK) as fd:
+		with os.fdopen(os.open(eco.path, os.O_NONBLOCK)) as fd:
 			while(1):
 				try:
 					os.read(fd,4)
@@ -466,13 +466,13 @@ class eco:
 		try:
 			eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 			eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
-			with os.open(eco.path, os.O_RDWR) as fd:
+			with os.fdopen(os.open(eco.path, os.O_RDWR)) as fd:
 				state=os.read(fd,4)
 				os.close(fd)
 			if(state == b'\x02'):
 				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
-				with os.open(eco.path, os.O_RDWR) as fd:
+				with os.fdopen(os.open(eco.path, os.O_RDWR)) as fd:
 					state=os.read(fd,4)
 					os.close(fd)
 		except Exception as e:
@@ -546,7 +546,7 @@ class eco:
 				signal.signal(signal.SIGALRM, eco.send_timeout_handler)
 				signal.alarm(timeout)
 			if(eco.onPi):
-				with os.open(eco.path, os.O_RDWR) as fd:
+				with os.fdopen(os.open(eco.path, os.O_RDWR)) as fd:
 					os.write(fd, HIDpacket)
 					os.close(fd)
 			else:
