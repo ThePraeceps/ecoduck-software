@@ -459,7 +459,8 @@ class eco:
 			fcntl.fcntl(fd.fileno(), fcntl.F_SETFL, flag | os.O_NONBLOCK)
 			while(1):
 				try:
-					fd.read(4)
+					if(None == fd.read(4)):
+						break
 				except:
 					break
 			fd.close()
