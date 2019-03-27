@@ -201,7 +201,7 @@ class eco:
 
 					# Splitting line into command and command argument
 					current_command=eco.basic.getCommand(line)
-					current_arg=eco.Fubasic.getArg(line)
+					current_arg=eco.basic.getArg(line)
 
 					if current_command == "TYPE":
 						eco.type(current_arg)
@@ -553,6 +553,8 @@ class eco:
 				print(":".join("{:02x}".format(ord(c)) for c in HIDpacket.decode()))
 		except Exception as e:
 			if "Send timeout" in str(e):
+				return False
+			elif "Resource temporarily unavailable" in str(e):
 				return False
 			raise e
 		if(timeout > 0):
