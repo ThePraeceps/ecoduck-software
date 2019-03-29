@@ -459,7 +459,7 @@ class eco:
 			fcntl.fcntl(fd.fileno(), fcntl.F_SETFL, flag | os.O_NONBLOCK)
 			while(1):
 				try:
-					if(None == fd.read(4)):
+					if(None == fd.read(1)):
 						break
 				except:
 					break
@@ -472,7 +472,7 @@ class eco:
 			with open(eco.path, 'rb') as fd:
 				state=fd.read(1)
 				fd.close()
-			if(state == b'\x02'):
+			if(state & b'\x02' == b'\x02'):
 				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
 				with open(eco.path, 'rb') as fd:
