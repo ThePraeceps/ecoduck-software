@@ -472,7 +472,7 @@ class eco:
 			with open(eco.path, 'rb') as fd:
 				state=fd.read(1)
 				fd.close()
-			if(state & b'\x02' == b'\x02'):
+			if(int(state) & 2 == 2):
 				eco.sendHIDpacket(b'\x00\x00\x39\x00\x00\x00\x00\x00', 0)
 				eco.sendHIDpacket(b'\x00\x00\x00\x00\x00\x00\x00\x00', 0)
 				with open(eco.path, 'rb') as fd:
