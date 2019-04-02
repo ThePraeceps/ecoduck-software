@@ -108,8 +108,9 @@ while(True):
 			eco.set_gadget_mode(default_gadget)
 
 		print("Using gadget: " + eco.get_gadget_mode())
-		sleep(3)
+		sleep(2)
 		if(os.path.exists(payload)):
+			sleep(2)
 			if(advanced):
 				print("Running payload in advanced mode")
 				spec = importlib.util.spec_from_file_location("payload", payload)
