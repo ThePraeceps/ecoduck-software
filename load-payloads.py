@@ -1,5 +1,6 @@
 import os, io, shutil, importlib.util
 from ecoduck import eco
+from time import sleep
 
 advanced=False
 infinite=True
@@ -107,6 +108,7 @@ while(True):
 			eco.set_gadget_mode(default_gadget)
 
 		print("Using gadget: " + eco.get_gadget_mode())
+		sleep(2)
 		if(os.path.exists(payload)):
 			if(advanced):
 				print("Running payload in advanced mode")
