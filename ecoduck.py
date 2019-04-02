@@ -219,7 +219,7 @@ class eco:
 					elif current_command == "REPEAT":
 						repetitions = int(current_arg)
 						# Check for invalid repeat length
-						if(isnan(timeToWait)):
+						if(isnan(repetitions)):
 							if(eco.debug >=1):
 								print("User passed attempted to use invalid repeat length ")
 								print("Argument: " + current_arg)
