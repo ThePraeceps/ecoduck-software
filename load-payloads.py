@@ -66,6 +66,7 @@ for payload_type in payloads:
 		dest=os.path.abspath(os.path.join(payload_dir, payload_type))
 		shutil.move(src, dest)
 
+eco.set_gadget_mode(default_gadget)
 print("Payloads loaded, waiting for connection")
 while(True):
 	if(eco.is_hid_connected(1)):
@@ -104,8 +105,7 @@ while(True):
 				eco.set_gadget_mode(default_gadget)
 			elif(os_gadget_detection):
 				eco.set_gadget_mode(detected_os)
-		else:
-			eco.set_gadget_mode(default_gadget)
+			
 
 		print("Using gadget: " + eco.get_gadget_mode())
 		sleep(2)
