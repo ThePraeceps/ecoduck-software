@@ -65,8 +65,8 @@ for payload_type in payloads:
 		print("Moved: " + src)
 		dest=os.path.abspath(os.path.join(payload_dir, payload_type))
 		shutil.move(src, dest)
-
-eco.set_gadget_mode(default_gadget)
+if(not(os_gadget_detection)):
+	eco.set_gadget_mode(default_gadget)
 print("Payloads loaded, waiting for connection")
 while(True):
 	if(eco.is_hid_connected(1)):
@@ -105,12 +105,10 @@ while(True):
 				eco.set_gadget_mode(default_gadget)
 			elif(os_gadget_detection):
 				eco.set_gadget_mode(detected_os)
-			
+			eco.wait_for_keyboard_state(True)
 
 		print("Using gadget: " + eco.get_gadget_mode())
-		sleep(2)
 		if(os.path.exists(payload)):
-			sleep(2)
 			if(advanced):
 				print("Running payload in advanced mode")
 				spec = importlib.util.spec_from_file_location("payload", payload)
@@ -129,5 +127,4 @@ while(True):
 			print("Path: " + eco.path)
 			eco.wait_for_keyboard_state(False)
 			print("Disconnected!")
-		eco.set_gadget_mode("simple")
 
